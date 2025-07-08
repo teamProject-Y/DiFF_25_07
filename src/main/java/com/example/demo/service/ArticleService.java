@@ -6,33 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.ArticleRepository;
-import com.example.demo.repository.ReactionRepository;
+import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.ResultData;
-
-import util.Ut;
 
 @Service
 public class ArticleService {
 
 	@Autowired
 	private ArticleRepository articleRepository;
-	
-	@Autowired
-	private ReactionRepository reactionRepository;
 
 	public ArticleService(ArticleRepository articleRepository) {
 		this.articleRepository = articleRepository;
 	}
 
-	
-	public int getLastInsertId() {
-		return articleRepository.getLastInsertId();
-	}
+	public ResultData writeArticle(int memberId, String title, String body, String boardId) {
+		articleRepository.writeArticle(memberId, title, body, boardId);
 
-	public Article writeArticle(String title, String body, int memberId, int boardId) {
-		articleRepository.writeArticle(title, body, memberId, boardId);
-		return new Article(title, body, memberId, boardId);
+		int id = articleRepository.getLastInsertId();
+
+		return ResultData.from("S-1", Ut.f("%d번 글이 등록되었습니다", id), "등록 된 게시글 id", id);
 	}
 
 	public void deleteArticle(int id) {
@@ -43,88 +36,73 @@ public class ArticleService {
 		articleRepository.modifyArticle(id, title, body);
 	}
 
+	public ResultData userCanModify(int loginedMemberId, Article article) {
+
+		if (article.getMemberId() != loginedMemberId) {
+			return ResultData.from("F-A", Ut.f("%d번 게시글에 대한 수정 권한 없음", article.getId()));
+		}
+
+		return ResultData.from("S-1", Ut.f("%d번 게시글 수정 가능", article.getId()));
+	}
+
+	public ResultData userCanDelete(int loginedMemberId, Article article) {
+		if (article.getMemberId() != loginedMemberId) {
+			return ResultData.from("F-A", Ut.f("%d번 게시글에 대한 삭제 권한 없음", article.getId()));
+		}
+
+		return ResultData.from("S-1", Ut.f("%d번 게시글 삭제 가능", article.getId()));
+	}
+
+	public Article getForPrintArticle(int loginedMemberId, int id) {
+
+		Article article = articleRepository.getForPrintArticle(id);
+
+		controlForPrintData(loginedMemberId, article);
+
+		return article;
+	}
+
+	private void controlForPrintData(int loginedMemberId, Article article) {
+		if (article == null) {
+			return;
+		}
+
+		ResultData userCanModifyRd = userCanModify(loginedMemberId, article);
+		article.setUserCanModify(userCanModifyRd.isSuccess());
+
+		ResultData userDeleteRd = userCanDelete(loginedMemberId, article);
+		article.setUserCanDelete(userDeleteRd.isSuccess());
+	}
+
 	public Article getArticleById(int id) {
 		return articleRepository.getArticleById(id);
 	}
 
-	public List<Article> getArticles(String keyword, int boardId, int searchItem, int limitFrom, int itemsInAPage) {
-		return articleRepository.getArticles(keyword, boardId, searchItem, limitFrom, itemsInAPage);
+	public List<Article> getArticles() {
+		return articleRepository.getArticles();
 	}
 
-	public Article getArticleForPrint(int id, int loginedMemberId) {
-		
-		Article article = articleRepository.getArticleForPrint(id);
+	public List<Article> getForPrintArticles(int boardId, int itemsInAPage, int page, String searchKeywordTypeCode,
+			String searchKeyword) {
+		// SELECT * FROM article WHERE boardId = 1 ORDER BY id DESC LIMIT 0, 10;
+		// --> 1page
+		// SELECT * FROM article WHERE boardId = 1 ORDER BY id DESC LIMIT 10, 10;
+		// --> 2page
 
-		updateForPrintData(loginedMemberId, article);
-	    
-		return article;
+		int limitFrom = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+
+		return articleRepository.getForPrintArticles(boardId, limitFrom, limitTake, searchKeywordTypeCode,
+				searchKeyword);
 	}
 
-
-	private void updateForPrintData(int loginedMemberId, Article article) {
-		if (article == null) return;
-
-		ResultData userCanModifyRd = userCanModify(loginedMemberId, article);
-		article.setUserCanModify(userCanModifyRd.isSuccess());
-		
-		ResultData userCanDeleteRd = userCanDelete(loginedMemberId, article);
-		article.setUserCanDelete(userCanModifyRd.isSuccess());
-		
-		ResultData userReactionRd = userReaction(loginedMemberId, article.getId());
-		if(userReactionRd == null) return;
-		article.setUserReaction((int)userReactionRd.getData1());
-
+	public int getArticleCount(int boardId, String searchKeywordTypeCode, String searchKeyword) {
+		return articleRepository.getArticleCount(boardId, searchKeywordTypeCode, searchKeyword);
 	}
 
+	public ResultData increaseHitCount(int id) {
+		int affectedRow = articleRepository.increaseHitCount(id);
 
-	public ResultData userReaction(int loginedMemberId, int id) { // 
-		
-		int isReactioned = reactionRepository.getIsReactioned(loginedMemberId, id, "article");
-		if(isReactioned == 0) return null;
-		
-		int reactionPoint = reactionRepository.getUserReaction(loginedMemberId, id, "article");
-		
-		if(reactionPoint == 0) return ResultData.from("F-1",Ut.f("%d번 게시글 반응", id), "없음", reactionPoint);
-		else if(reactionPoint == 1) return ResultData.from("S-1",Ut.f("%d번 게시글 반응", id), "좋아요", reactionPoint);
-		else return ResultData.from("S-2",Ut.f("%d번 게시글 반응", id), "싫어요", reactionPoint);
-		
-	}
-
-
-	public ResultData userCanModify(int loginedMemberId, Article article) {
-
-		if (article.getMemberId() != loginedMemberId) {
-			return ResultData.from("F-A", Ut.f("%d번 게시글 수정 권한 없음", article.getId()));
-		}
-
-		return ResultData.from("S-1", Ut.f("%d번 게시글 수정 권한 있음", article.getId()));
-	}
-	
-	private ResultData userCanDelete(int loginedMemberId, Article article) {
-		
-		if (article.getMemberId() != loginedMemberId) {
-			return ResultData.from("F-A", Ut.f("%d번 게시글 삭제 권한 없음", article.getId()));
-		}
-
-		return ResultData.from("S-1", Ut.f("%d번 게시글 삭제 권한 있음", article.getId()));
-	}
-
-
-	public int getArticleCnt() {
-		
-		return articleRepository.getArticleCnt();
-	}
-
-
-	public int getArticlesCnt(String keyword, int boardId, int searchItem) {
-		return articleRepository.getArticlesCnt(keyword, boardId, searchItem);
-	}
-
-
-	public ResultData doIncHits(int id) {
-		
-		int affectedRow = articleRepository.doIncHits(id);
-		
 		if (affectedRow == 0) {
 			return ResultData.from("F-1", "해당 게시글 없음", "id", id);
 		}
@@ -132,14 +110,56 @@ public class ArticleService {
 		return ResultData.from("S-1", "조회수 증가", "id", id);
 	}
 
-
-	public int getLikes(int id) {
-		return articleRepository.getLikes(id);
+	public Object getArticleHitCount(int id) {
+		return articleRepository.getArticleHitCount(id);
 	}
 
+	public ResultData increaseGoodReactionPoint(int relId) {
+		int affectedRow = articleRepository.increaseGoodReactionPoint(relId);
 
-	public int getHits(int id) {
-		return articleRepository.getHits(id);
+		if (affectedRow == 0) {
+			return ResultData.from("F-1", "없는 게시물");
+		}
+
+		return ResultData.from("S-1", "좋아요 증가", "affectedRow", affectedRow);
+	}
+
+	public ResultData increaseBadReactionPoint(int relId) {
+		int affectedRow = articleRepository.increaseBadReactionPoint(relId);
+
+		if (affectedRow == 0) {
+			return ResultData.from("F-1", "없는 게시물");
+		}
+
+		return ResultData.from("S-1", "싫어요 증가", "affectedRow", affectedRow);
+	}
+
+	public ResultData decreaseGoodReactionPoint(int relId) {
+		int affectedRow = articleRepository.decreaseGoodReactionPoint(relId);
+
+		if (affectedRow == 0) {
+			return ResultData.from("F-1", "없는 게시물");
+		}
+
+		return ResultData.from("S-1", "좋아요 감소", "affectedRow", affectedRow);
+	}
+
+	public ResultData decreaseBadReactionPoint(int relId) {
+		int affectedRow = articleRepository.decreaseBadReactionPoint(relId);
+
+		if (affectedRow == 0) {
+			return ResultData.from("F-1", "없는 게시물");
+		}
+
+		return ResultData.from("S-1", "싫어요 감소", "affectedRow", affectedRow);
+	}
+
+	public int getGoodRP(int relId) {
+		return articleRepository.getGoodRP(relId);
+	}
+
+	public int getBadRP(int relId) {
+		return articleRepository.getBadRP(relId);
 	}
 
 }

@@ -3,295 +3,397 @@
 
 <c:set var="pageTitle" value="ARTICLE DETAIL"></c:set>
 <%@ include file="../common/head.jspf"%>
+<%@ include file="../common/toastUiEditorLib.jspf"%>
 
+<!-- <iframe src="http://localhost:8080/usr/article/doIncreaseHitCount?id=2" frameborder="0"></iframe> -->
 
+<!-- 변수 -->
 <script>
 	const params = {};
 	params.id = parseInt('${param.id}');
+
+	var isAlreadyAddGoodRp = ${isAlreadyAddGoodRp};
+	var isAlreadyAddBadRp = ${isAlreadyAddBadRp};
+</script>
+
+<!-- 좋아요 싫어요  -->
+<script>
+<!-- 좋아요 싫어요 버튼	-->
+	function checkRP() {
+		if (isAlreadyAddGoodRp == true) {
+			$('#likeButton').toggleClass('btn-outline');
+		} else if (isAlreadyAddBadRp == true) {
+			$('#DislikeButton').toggleClass('btn-outline');
+		} else {
+			return;
+		}
+	}
+
+	function doGoodReaction(articleId) {
+
+		$.ajax({
+			url : '/usr/reactionPoint/doGoodReaction',
+			type : 'POST',
+			data : {
+				relTypeCode : 'article',
+				relId : articleId
+			},
+			dataType : 'json',
+			success : function(data) {
+				console.log(data);
+				console.log('data.data1Name : ' + data.data1Name);
+				console.log('data.data1 : ' + data.data1);
+				console.log('data.data2Name : ' + data.data2Name);
+				console.log('data.data2 : ' + data.data2);
+				if (data.resultCode.startsWith('S-')) {
+					var likeButton = $('#likeButton');
+					var likeCount = $('#likeCount');
+					var likeCountC = $('.likeCount');
+					var DislikeButton = $('#DislikeButton');
+					var DislikeCount = $('#DislikeCount');
+					var DislikeCountC = $('.DislikeCount');
+
+					if (data.resultCode == 'S-1') {
+						likeButton.toggleClass('btn-outline');
+						likeCount.text(data.data1);
+						likeCountC.text(data.data1);
+					} else if (data.resultCode == 'S-2') {
+						DislikeButton.toggleClass('btn-outline');
+						DislikeCount.text(data.data2);
+						DislikeCountC.text(data.data2);
+						likeButton.toggleClass('btn-outline');
+						likeCount.text(data.data1);
+						likeCountC.text(data.data1);
+					} else {
+						likeButton.toggleClass('btn-outline');
+						likeCount.text(data.data1);
+						likeCountC.text(data.data1);
+					}
+
+				} else {
+					alert(data.msg);
+				}
+
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				alert('좋아요 오류 발생 : ' + textStatus);
+
+			}
+
+		});
+	}
+
+	function doBadReaction(articleId) {
+
+		$.ajax({
+			url : '/usr/reactionPoint/doBadReaction',
+			type : 'POST',
+			data : {
+				relTypeCode : 'article',
+				relId : articleId
+			},
+			dataType : 'json',
+			success : function(data) {
+				console.log(data);
+				console.log('data.data1Name : ' + data.data1Name);
+				console.log('data.data1 : ' + data.data1);
+				console.log('data.data2Name : ' + data.data2Name);
+				console.log('data.data2 : ' + data.data2);
+				if (data.resultCode.startsWith('S-')) {
+					var likeButton = $('#likeButton');
+					var likeCount = $('#likeCount');
+					var likeCountC = $('.likeCount');
+					var DislikeButton = $('#DislikeButton');
+					var DislikeCount = $('#DislikeCount');
+					var DislikeCountC = $('.DislikeCount');
+
+					if (data.resultCode == 'S-1') {
+						DislikeButton.toggleClass('btn-outline');
+						DislikeCount.text(data.data2);
+						DislikeCountC.text(data.data2);
+					} else if (data.resultCode == 'S-2') {
+						likeButton.toggleClass('btn-outline');
+						likeCount.text(data.data1);
+						likeCountC.text(data.data1);
+						DislikeButton.toggleClass('btn-outline');
+						DislikeCount.text(data.data2);
+						DislikeCountC.text(data.data2);
+
+					} else {
+						DislikeButton.toggleClass('btn-outline');
+						DislikeCount.text(data.data2);
+						DislikeCountC.text(data.data2);
+					}
+
+				} else {
+					alert(data.msg);
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				alert('싫어요 오류 발생 : ' + textStatus);
+			}
+
+		});
+	}
+
+	$(function() {
+		checkRP();
+	});
+</script>
+
+<!-- 댓글 수정 -->
+<script>
+function toggleModifybtn(replyId) {
 	
+	console.log(replyId);
+	
+	$('#modify-btn-'+replyId).hide();
+	$('#save-btn-'+replyId).show();
+	$('#reply-'+replyId).hide();
+	$('#modify-form-'+replyId).show();
+}
+
+function doModifyReply(replyId) {
+	 console.log(replyId); // 디버깅을 위해 replyId를 콘솔에 출력
+	    
+	    // form 요소를 정확하게 선택
+	    var form = $('#modify-form-' + replyId);
+	    console.log(form); // 디버깅을 위해 form을 콘솔에 출력
+
+	    // form 내의 input 요소의 값을 가져옵니다
+	    var text = form.find('input[name="reply-text-' + replyId + '"]').val();
+	    console.log(text); // 디버깅을 위해 text를 콘솔에 출력
+
+	    // form의 action 속성 값을 가져옵니다
+	    var action = form.attr('action');
+	    console.log(action); // 디버깅을 위해 action을 콘솔에 출력
+	
+    $.post({
+    	url: '/usr/reply/doModify', // 수정된 URL
+        type: 'POST', // GET에서 POST로 변경
+        data: { id: replyId, body: text }, // 서버에 전송할 데이터
+        success: function(data) {
+        	$('#modify-form-'+replyId).hide();
+        	$('#reply-'+replyId).text(data);
+        	$('#reply-'+replyId).show();
+        	$('#save-btn-'+replyId).hide();
+        	$('#modify-btn-'+replyId).show();
+        },
+        error: function(xhr, status, error) {
+            alert('댓글 수정에 실패했습니다: ' + error);
+        }
+	})
+}
 </script>
 
 <script>
-// 조회수 증가 함수
-	function articleDetail_increaseHits() {
-	
+	function ArticleDetail__doIncreaseHitCount() {
+		
 		const localStorageKey = 'article__' + params.id + '__alreadyOnView';
 		
-		if(localStorage.getItem(localStorageKey)){ // 로컬 스토리지
+		if(localStorage.getItem(localStorageKey)){
 			return;
 		}
 		
 		localStorage.setItem(localStorageKey, true);
 		
-		$.get('../article/doIncHits',{
-			id : params.id, <!-- 매개변수 설정 -->
-			ajaxMode : 'Y' <!-- 매개변수 설정 -->
-		}, function(data){ <!-- incHits의 return 값이 data에 저장된다. -->
-			$('.article_detail_hit_count').html("조회수 : " + data.data1);
-			console.log(data);
-			console.log($("comment_reaction_box").find(".good_btn").val());
-			console.log($("comment_reaction_box").find(".bad_btn").val());
-		}, 'json');
-	}
-	
-// 	article 좋아요 활성화 함수
- 	function articleDetail_goodReaction_toArticle() {
- 		const value = $(".article_reaction_box").find(".good_btn").val();
- 		$.get('../article/doGoodReaction',{
+		
+		$.get('../article/doIncreaseHitCountRd', {
 			id : params.id,
-			relTypeCode : "article",
 			ajaxMode : 'Y'
-		}, function(data){
+		}, function(data) {
 			console.log(data);
-			$(".article_reaction_box").find(".good_btn").toggleClass("bg-neutral-300");
-			$(".article_reaction_box").find('.bad_btn').removeClass("bg-neutral-300");
-			$(".article_reaction_box").find('.good_btn').html("👍 " + data.data1.extra_goodReactionPoint);
-			$(".article_reaction_box").find('.bad_btn').html("👎 " + data.data1.extra_badReactionPoint);
+			console.log(data.data1);
+			console.log(data.msg);
+			$('.article-detail__hit-count').html(data.data1);
 		}, 'json');
 	}
-	
-// 	article 싫어요 활성화 함수
- 	function articleDetail_badReaction_toArticle() {
- 		const value = $(".article_reaction_box").find(".bad_btn").val();
- 		$.get('../article/doBadReaction',{
-			id : params.id,
-			relTypeCode : "article",
- 			ajaxMode : 'Y'
-		}, function(data){
-			console.log(data);
-			$(".article_reaction_box").find('.bad_btn').toggleClass("bg-neutral-300");
-			$(".article_reaction_box").find('.good_btn').removeClass("bg-neutral-300");
-			$(".article_reaction_box").find('.good_btn').html("👍 " + data.data1.extra_goodReactionPoint);
-			$(".article_reaction_box").find('.bad_btn').html("👎 " + data.data1.extra_badReactionPoint);
-		}, 'json');
-	}
-	
-// 	comment 좋아요 활성화 함수
- 	function articleDetail_goodReaction_toComment() {
- 		const value = $(".comment_reaction_box").find(".good_btn").val();
- 		$.get('../article/doGoodReaction',{
-			id : params.id,
-			relTypeCode : "comment",
-			ajaxMode : 'Y'
-		}, function(data){
-			console.log(data);
-			$(".comment_reaction_box").find('.good_btn').toggleClass("bg-neutral-300");
-			$(".comment_reaction_box").find('.bad_btn').removeClass("bg-neutral-300");
-			$(".comment_reaction_box").find('.good_btn').html("👍 " + data.data1.extra_goodReactionPoint);
-			$(".comment_reaction_box").find('.bad_btn').html("👎 " + data.data1.extra_badReactionPoint);
-		}, 'json');
-	}
-	
-// 	comment 싫어요 활성화 함수
- 	function articleDetail_badReaction_toComment() {
- 		const value = $(".comment_reaction_box").find(".bad_btn").val();
- 		$.get('../article/doBadReaction',{
-			id : params.id,
-			relTypeCode : "comment",
- 			ajaxMode : 'Y'
-		}, function(data){
-			console.log(data);
-			$(".comment_reaction_box").find('.bad_btn').toggleClass("bg-neutral-300");
-			$(".comment_reaction_box").find('.good_btn').removeClass("bg-neutral-300");
-			$(".comment_reaction_box").find('.good_btn').html("👍 " + data.data1.extra_goodReactionPoint);
-			$(".comment_reaction_box").find('.bad_btn').html("👎 " + data.data1.extra_badReactionPoint);
-		}, 'json');
-	}	
 
-	
 	$(function() {
-		articleDetail_increaseHits();
-// 		setTimeout(articleDetail_increaseHits, 2000);
+		ArticleDetail__doIncreaseHitCount();
+		// 		setTimeout(ArticleDetail__doIncreaseHitCount, 2000);
 
 	})
-	
 </script>
 
-<button onclick="history.back()" class="block text-4xl pl-10 pt-6 cursor-pointer">
-		<i class="fa-solid fa-angle-left"></i>
-</button>
-<div class="article container m-auto">
-	
-	<div class="title text-neutral-800 text-4xl font-bold mx-2 my-6">
-		<span>
-		Article Details of ${article.id }
-		</span>
-	</div>
-	
-	<div class="border bg-neutral-100 border-neutral-400 rounded-xl px-8 py-5">
-	
-		<div class="header p-3">
-		
-			<div class="title text-3xl font-medium">${article.title }</div>
-			
-			<div class="articleInfo flex my-2">
-<!-- 				article info -->
-				<div class="writeInfo text-neutral-800 m-1">
-					<span> 작성 일자 : ${article.regDate.toString().substring(0, 10)} &nbsp;&nbsp;&nbsp;</span>
-					<span> 수정 일자 : ${article.updateDate.toString().substring(0, 10)} &nbsp;&nbsp;&nbsp;</span>
-					<span> 작성자 : ${article.extra_writer } &nbsp;&nbsp;&nbsp;</span>
-					<span> 게시판 : ${article.extra_boardCode } &nbsp;&nbsp;&nbsp;</span>
-					<span class="article_detail_hit_count"> 조회수 : ${article.hits } </span>
-				</div>
-
-				<div class="flex-grow"></div>
-				
-<!-- 				like -->
-				<div class="article_reaction_box flex items-center justify-center mx-4 text-xl cursor-pointer">	
-					<c:choose>
-						<c:when test="${article.userReaction == 1}">
-							<button class="good_btn btn btn-circle btn-xl btn-outline bg-neutral-300 px-3 text-base whitespace-nowrap" 
-							onClick="articleDetail_goodReaction_toArticle()" value="${article.userReaction}">
-							👍 ${article.extra_goodReactionPoint }</button>
-						</c:when>
-						<c:otherwise>
-							<button class="good_btn btn btn-circle btn-xl btn-outline px-3 text-base whitespace-nowrap" 
-							onClick="articleDetail_goodReaction_toArticle()" value="${article.userReaction}">
-							👍 ${article.extra_goodReactionPoint }</button>
-				   		</c:otherwise>
-					</c:choose> 
-					&nbsp;&nbsp; 
-					<c:choose>
-						<c:when test="${article.userReaction == -1}">
-							<button class="bad_btn btn btn-circle btn-xl btn-outline bg-neutral-300 px-3 text-base whitespace-nowrap" 
-							onClick="articleDetail_badReaction_toArticle()" value="${article.userReaction}">
-							👎 ${article.extra_badReactionPoint }</button>
-						</c:when>
-						<c:otherwise>
-							<button class="bad_btn btn btn-circle btn-xl btn-outline px-3 text-base whitespace-nowrap" 
-							onClick="articleDetail_badReaction_toArticle()" value="${article.userReaction}">
-							👎 ${article.extra_badReactionPoint }</button>
-				   		</c:otherwise>
-					</c:choose>
-					
-				</div>
-					
-<!-- 				modify, delete btn -->
-				<div class="article-btn-box">
-					<c:if test="${article.userCanModify}">
-						<button class="btn rounded-xl ml-4 mr-1 px-3 hover:bg-neutral-300">
-							<a href="modify?id=${article.id}">Modify</a>
+<section class="mt-24 text-xl px-4">
+	<div class="mx-auto">
+		<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+			<tbody>
+				<tr>
+					<th style="text-align: center;">ID</th>
+					<td style="text-align: center;">${article.id}</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">Registration Date</th>
+					<td style="text-align: center;">${article.regDate}</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">Update Date</th>
+					<td style="text-align: center;">${article.updateDate}</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">Writer</th>
+					<td style="text-align: center;">${article.extra__writer }</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">BoardId</th>
+					<td style="text-align: center;">${article.boardId }</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">LIKE / DISLIKE / ${usersReaction }</th>
+					<td style="text-align: center;">
+						<button id="likeButton" class="btn btn-outline btn-success" onclick="doGoodReaction(${param.id})">
+							👍 LIKE
+							<span class="likeCount">${article.goodReactionPoint}</span>
 						</button>
-					</c:if>
-					<c:if test="${article.userCanDelete}">
-						<button class="btn rounded-xl mx-1 px-3 hover:bg-neutral-300">
-							<a onclick="return confirm('정말 삭제할거야? ㅠㅠ😢?');" 
-								href="doDelete?id=${article.id}">Delete</a>
+						<button id="DislikeButton" class="btn btn-outline btn-error" onclick="doBadReaction(${param.id})">
+							👎 DISLIKE
+							<span class="DislikeCount">${article.badReactionPoint}</span>
 						</button>
-					</c:if>
-				</div>
-				
-			</div>
-		</div>
-		
-		<hr class="border-neutral-400"/>
+						<%-- 						<a href="/usr/reactionPoint/doGoodReaction?relTypeCode=article&relId=${param.id }&replaceUri=${rq.currentUri}" --%>
+						<%-- 							class="btn btn-outline btn-success">👍 LIKE ${article.goodReactionPoint }</a> --%>
+						<%-- 						<a href="/usr/reactionPoint/doBadReaction?relTypeCode=article&relId=${param.id }&replaceUri=${rq.currentUri}" --%>
+						<%-- 							class="btn btn-outline btn-error">👎 DISLIKE ${article.badReactionPoint}</a> --%>
+					</td>
+				</tr>
 
-		<div class="content mt-2 p-4">
-			${article.body}
+				<tr>
+					<th style="text-align: center;">VIEWS</th>
+					<td style="text-align: center;">
+						<span class="article-detail__hit-count">${article.hitCount }</span>
+					</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">Title</th>
+					<td style="text-align: center;">${article.title }</td>
+				</tr>
+				<tr>
+					<th style="text-align: center;">Body</th>
+					<td>
+						<div class="toast-ui-viewer">
+							<script type="text/x-template">${article.body}</script>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="btns">
+			<button class="btn btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
+			<c:if test="${article.userCanModify }">
+				<a class="btn btn-ghost" href="../article/modify?id=${article.id}">수정</a>
+			</c:if>
+			<c:if test="${article.userCanDelete }">
+				<a class="btn btn-ghost" href="../article/doDelete?id=${article.id}">삭제</a>
+			</c:if>
 		</div>
-		<div class="hidden">
-			<button class="btn btn-xl btn-circle hover:bg-neutral-300 font-black felx flex-col"
-			 onClick="articleDetail_goodReaction()" value="${article.userReaction}">
-			<c:choose>
-				<c:when test="${article.userReaction == 1}">
-				<span class="goodIcon -m-1">♥</span>
-			 	<div class="good_count -m-2">${article.extra_goodReactionPoint }</div>
-				 	</c:when>
-					<c:otherwise>
-			 	<span class="goodIcon -m-1">♡</span>
-			 	<div class="good_count -m-2">${article.extra_goodReactionPoint }</div>
-			 		</c:otherwise>
-			</c:choose>  
-			</button>
-			
-			<button class="btn btn-xl btn-circle hover:bg-neutral-300 font-black felx flex-col" 
-			onClick="articleDetail_badReaction()" value="${article.userReaction}">
-				<c:choose>
-				<c:when test="${article.userReaction == -1}">
-				 	<span class="badIcon -m-1"> ✕ </span>
-					<div class="bad_count -m-2">${article.extra_badReactionPoint }</div>
-			 	</c:when>
-				<c:otherwise>
-				 	<span class="badIcon -m-1 text-red-400"> ✕ </span>
-				 	<div class="bad_count -m-2">${article.extra_badReactionPoint }</div>
-			 	  </c:otherwise>
-			</c:choose>
-			</button>
-		</div>
+
 	</div>
-</div>
+</section>
 
+<script>
+	function ReplyWrite__submit(form) {
+		console.log(form.body.value);
+		
+		form.body.value = form.body.value.trim();
+		
+		if(form.body.value.length < 3){
+			alert('3글자 이상 입력해');
+			form.body.focus();
+			return;
+		}
+		
+		form.submit();
+	}
+</script>
 
-<div class="comment-box container flex justify-center flex-col mx-auto mt-4 mb-20">
-	<c:if test="${not empty comments }">
-		<div class="comments-box my-2 rounded-xl border border-solid border-neutral-500 px-4 py-6">
-			<c:forEach var="comment" items="${comments }">
-				<hr class="border-neutral-500 my-4"/>
-				<div class="flex items-center px-4">
-<!-- 					profile -->
-					<div class="avatar">
-					  <div class="w-12 rounded">
-					    <img src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
-					  </div>
-					</div>
-<!-- 					content -->
-					<strong class="ml-2 mr-6">${comment.extra_writer }</strong>
-					<div class="flex-grow">${comment.body }</div>
-<!-- 					btn -->
-					<div class="comment_reaction_box">
-						<c:if test="${comment.userCanModify}">
-							<button class="btn rounded-xl px-3 hover:bg-neutral-300">
-								Modify
-							</button>
-						</c:if>
-						<c:if test="${comment.userCanDelete}">
-							<button class="btn rounded-xl px-3 hover:bg-neutral-300" onClick="">
-								Delete
-							</button>
-						</c:if>
-						<c:choose>
-							<c:when test="${comment.userReaction == 1}">
-								<button class="good_btn btn btn-circle btn-xl btn-outline bg-neutral-300 px-3 text-base whitespace-nowrap" 
-								onClick="articleDetail_goodReaction_toComment()" value="${comment.userReaction}">
-								👍 ${comment.extra_goodReactionPoint }</button>
-							</c:when>
-							<c:otherwise>
-								<button class="good_btn btn btn-circle btn-xl btn-outline px-3 text-base whitespace-nowrap" 
-								onClick="articleDetail_goodReaction_toComment()" value="${comment.userReaction}">
-								👍 ${comment.extra_goodReactionPoint }</button>
-					   		</c:otherwise>
-						</c:choose> 
-						&nbsp;&nbsp; 
-						<c:choose>
-							<c:when test="${comment.userReaction == -1}">
-								<button class="bad_btn btn btn-circle btn-xl btn-outline bg-neutral-300 px-3 text-base whitespace-nowrap" 
-								onClick="articleDetail_badReaction_toComment()" value="${comment.userReaction}">
-								👎 ${comment.extra_badReactionPoint }</button>
-							</c:when>
-							<c:otherwise>
-								<button class="bad_btn btn btn-circle btn-xl btn-outline px-3 text-base whitespace-nowrap" 
-								onClick="articleDetail_badReaction_toComment()" value="${comment.userReaction}">
-								👎 ${comment.extra_badReactionPoint }</button>
-					   		</c:otherwise>
-						</c:choose>
-<%-- 						👍 ${comment.extra_goodReactionPoint } --%>
-<%-- 						👍 ${comment.extra_badReactionPoint } --%>
-					</div>
-				</div>
-			</c:forEach>
-		</div>
-	</c:if>
-	<div class="input-comment-box">
-		<form action="doCommentWrite" class="text-center">
-			<input type="hidden" name="id" value="${article.id}">
-			<label class="flex items-center border border-neutral-500 mx-auto overflow-hidden rounded-3xl p-2 gap-2">
-			  <input type="text" name="body" placeholder="나도 한마디 하기!"
-			         class="flex-grow min-w-0 px-2 py-1 focus-within:outline-none" />
-			  <input type="submit" value="게시" class="px-3 py-1 font-bold" />
-			</label>
+<!-- 댓글 -->
+<section class="mt-24 text-xl px-4">
+	<c:if test="${rq.isLogined() }">
+		<form action="../reply/doWrite" method="POST" onsubmit="ReplyWrite__submit(this); return false;" )>
+			<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+				<input type="hidden" name="relTypeCode" value="article" />
+				<input type="hidden" name="relId" value="${article.id }" />
+				<tbody>
+
+					<tr>
+						<th>댓글 내용 입력</th>
+						<td style="text-align: center;">
+							<textarea class="input input-bordered input-sm w-full max-w-xs" name="body" autocomplete="off" type="text"
+								placeholder="내용을 입력해"></textarea>
+						</td>
+
+					</tr>
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<button class="btn btn-outline">작성</button>
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
 		</form>
+	</c:if>
+
+	<c:if test="${!rq.isLogined() }">
+		댓글 작성을 위해 <a class="btn btn-outline btn-primary" href="${rq.loginUri }">로그인</a>이 필요합니다
+	</c:if>
+	<!-- 	댓글 리스트 -->
+	<div class="mx-auto">
+		<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+			<thead>
+				<tr>
+					<th style="text-align: center;">Registration Date</th>
+					<th style="text-align: center;">Writer</th>
+					<th style="text-align: center;">Body</th>
+					<th style="text-align: center;">Like</th>
+					<th style="text-align: center;">Dislike</th>
+					<th style="text-align: center;">Edit</th>
+					<th style="text-align: center;">Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="reply" items="${replies}">
+					<tr class="hover">
+						<td style="text-align: center;">${reply.regDate.substring(0,10)}</td>
+						<td style="text-align: center;">${reply.extra__writer}</td>
+						<td style="text-align: center;">
+							<span id="reply-${reply.id }">${reply.body}</span>
+							<form method="POST" id="modify-form-${reply.id }" style="display: none;" action="/usr/reply/doModify">
+								<input type="text" value="${reply.body }" name="reply-text-${reply.id }" />
+							</form>
+						</td>
+						<td style="text-align: center;">${reply.goodReactionPoint}</td>
+						<td style="text-align: center;">${reply.badReactionPoint}</td>
+						<td style="text-align: center;">
+							<c:if test="${reply.userCanModify }">
+								<%-- 								<a class="btn btn-outline btn-xs btn-success" href="../reply/modify?id=${reply.id }">수정</a> --%>
+								<button onclick="toggleModifybtn('${reply.id}');" id="modify-btn-${reply.id }" style="white-space: nowrap;"
+									class="btn btn-outline btn-xs btn-success">수정</button>
+								<button onclick="doModifyReply('${reply.id}');" style="white-space: nowrap; display: none;"
+									id="save-btn-${reply.id }" class="btn btn-outline btn-xs">저장</button>
+							</c:if>
+						</td>
+						<td style="text-align: center;">
+							<c:if test="${reply.userCanDelete }">
+								<a class="btn btn-outline btn-xs btn-error" onclick="if(confirm('정말 삭제?') == false) return false;"
+									href="../reply/doDelete?id=${reply.id }">삭제</a>
+							</c:if>
+						</td>
+					</tr>
+				</c:forEach>
+
+				<c:if test="${empty replies}">
+					<tr>
+						<td colspan="4" style="text-align: center;">댓글이 없습니다</td>
+					</tr>
+				</c:if>
+			</tbody>
+		</table>
 	</div>
-</div>
+</section>
+
 
 
 

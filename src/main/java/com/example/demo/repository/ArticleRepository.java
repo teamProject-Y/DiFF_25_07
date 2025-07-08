@@ -1,51 +1,46 @@
 package com.example.demo.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Component;
 
 import com.example.demo.vo.Article;
 
 @Mapper
 public interface ArticleRepository {
 
-//	@Insert("INSERT INTO article SET regDate = NOW(), updateDate = NOW(), title = #{title}, `body` = #{body}")
-	public int writeArticle(String title, String body, int memberId, int boardId);
+	public int writeArticle(int memberId, String title, String body, String boardId);
 
-//	@Delete("DELETE FROM article WHERE id = #{id}")
 	public void deleteArticle(int id);
 
-//	@Update("UPDATE article SET updateDate = NOW(), title = #{title}, `body` = #{body} WHERE id = #{id}")
 	public void modifyArticle(int id, String title, String body);
 
-//	@Select("SELECT * FROM article WHERE id = #{id}")
-	public Article getArticleById(int id);
-	
-//	@Select("SELECT A.*, M.name as extra_writerName FROM article A JOIN `member` M ON A.writerId = M.id WHERE A.id = #{id}")
-	public Article getArticleForPrint(int id);
-
-//	@Select("SELECT A.*, M.name as extra_writerName FROM article A JOIN `member` M ON A.writerId = M.id ORDER BY A.id DESC")
-	public List<Article> getArticles(String keyword, int boardId, int searchItem, int limitFrom, int itemsInAPage);
-
-//  @Select("SELECT LAST_INSERT_ID();")
 	public int getLastInsertId();
 
-//  @Select("SELECT COUNT(*) FROM article")
-	public int getArticleCnt();
+	public Article getArticleById(int id);
 
-	public int getArticlesCnt(String keyword, int boardId, int searchItem);
+	public List<Article> getArticles();
 
-	public int doIncHits(int id);
+	public Article getForPrintArticle(int loginedMemberId);
 
-	public int getLikes(int id);
+	public List<Article> getForPrintArticles(int boardId, int limitFrom, int limitTake, String searchKeywordTypeCode,
+			String searchKeyword);
 
-	public int isMyreaction(int articleId, int loginedMemberId);
+	public int getArticleCount(int boardId, String searchKeywordTypeCode, String searchKeyword);
 
-	public int getHits(int id);
+	public int increaseHitCount(int id);
+
+	public int getArticleHitCount(int id);
+
+	public int increaseGoodReactionPoint(int relId);
+
+	public int decreaseGoodReactionPoint(int relId);
+
+	public int increaseBadReactionPoint(int relId);
+
+	public int decreaseBadReactionPoint(int relId);
+
+	public int getGoodRP(int relId);
+
+	public int getBadRP(int relId);
 }

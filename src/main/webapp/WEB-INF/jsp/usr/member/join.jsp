@@ -4,31 +4,153 @@
 <c:set var="pageTitle" value="MEMBER JOIN"></c:set>
 <%@ include file="../common/head.jspf"%>
 
+<!-- lodash debounce -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+<script>
+	let validLoginId = "";
+	function JoinForm__submit(form) {
 
-<div class="container mx-auto mt-12 max-w-min p-4 bg-neutral-200 border border-solid border-neutral-300 rounded-lg">
-	<div class="title my-3 text-center text-2xl font-semibold">
-		 Join
+		form.loginId.value = form.loginId.value.trim();
+	    if (form.loginId.value == 0) {
+	        alert('아이디를 입력해주세요');
+	        return;
+	    }
+	    if (form.loginId.value != validLoginId) {
+	        alert('사용할 수 없는 아이디야');
+	        form.loginId.focus();
+	        return;
+	    }
+
+	    form.loginPw.value = form.loginPw.value.trim();
+	    if (form.loginPw.value == 0) {
+	        alert('비밀번호를 입력해주세요');
+	        return;
+	    }
+	    form.loginPwConfirm.value = form.loginPwConfirm.value.trim();
+	    if (form.loginPwConfirm.value == 0) {
+	        alert('비밀번호 확인을 입력해주세요');
+	        return;
+	    }
+	    if (form.loginPwConfirm.value != form.loginPw.value) {
+	        alert('비밀번호가 일치하지 않습니다');
+	        form.loginPw.focus();
+	        return;
+	    }
+	    form.name.value = form.name.value.trim();
+	    if (form.name.value == 0) {
+	        alert('이름을 입력해주세요');
+	        return;
+	    }
+	    form.nickname.value = form.nickname.value.trim();
+	    if (form.nickname.value == 0) {
+	        alert('닉네임을 입력해주세요');
+	        return;
+	    }
+	    form.email.value = form.email.value.trim();
+	    if (form.email.value == 0) {
+	        alert('이메일을 입력해주세요');
+	        return;
+	    }
+	    form.cellphoneNum.value = form.cellphoneNum.value.trim();
+	    if (form.cellphoneNum.value == 0) {
+	        alert('전화번호를 입력해주세요');
+	        return;
+	    }
+	    form.submit();
+	}
+
+	function checkLoginIdDup(el) {
+		$('.checkDup-msg').empty();
+		const form = $(el).closest('form').get(0);
+		if (form.loginId.value.length == 0) {
+			validLoginId = '';
+			return;
+		}
+		$.get('../member/getLoginIdDup', {
+			isAjax : 'Y',
+			loginId : form.loginId.value
+		}, function(data) {
+			$('.checkDup-msg').html('<div class="">' + data.msg + '</div>')
+			if (data.success) {
+				validLoginId = data.data1;
+			} else {
+				validLoginId = '';
+			}
+		}, 'json');
+	}
+	// checkLoginIdDup(); // 매번 실행
+	const checkLoginIdDupDebounced = _.debounce(checkLoginIdDup, 600); // 실행 빈도 조절
+</script>
+
+
+<section class="mt-8 text-xl px-4">
+	<div class="mx-auto">
+		<form action="../member/doJoin" method="POST" onsubmit="JoinForm__submit(this); return false;">
+			<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+				<tbody>
+					<tr>
+						<th>아이디</th>
+						<td style="text-align: center;">
+							<input onkeyup="checkLoginIdDupDebounced(this);"
+								class="input input-bordered input-primary input-sm w-full max-w-xs" name="loginId" autocomplete="off"
+								type="text" placeholder="아이디를 입력해" />
+						</td>
+					</tr>
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<div class="checkDup-msg"></div>
+						</td>
+					</tr>
+					<tr>
+						<th>비밀번호</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name="loginPw" autocomplete="off" type="text" placeholder="비밀번호 입력" />
+						</td>
+					</tr>
+					<tr>
+						<th>이름</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name="name" autocomplete="off" type="text" placeholder="이름 입력" />
+						</td>
+					</tr>
+					<tr>
+						<th>닉네임</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name="nickname" autocomplete="off" type="text" placeholder="닉네임 입력" />
+						</td>
+					</tr>
+					<tr>
+						<th>전화번호</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name=cellphoneNum autocomplete="off" type="text" placeholder="전화번호 입력" />
+						</td>
+					</tr>
+					<tr>
+						<th>이메일</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name="email" autocomplete="off" type="text" placeholder="이메일 입력" />
+						</td>
+					</tr>
+
+
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<button type="submit" class="btn btn-ghost">가입</button>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</form>
+		<div class="btns">
+			<button class="btn btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
+
+		</div>
 	</div>
-	<form onsubmit="return validate();" name="join" action="doJoin" method="POST">
-			
-		<div calss="flex flex-col justify-center">
-  			
-			<input type="text" name="loginId" id="loginId" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96 p-2.5" placeholder="ID">
-<!-- 			<div class="text-neutral-400 mb-6 px-2">Enter at least 4 letters and numbers</div> -->
-			<input type="password" name="loginPw" id="loginPw" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="Password">
-<!-- 			<div class="text-neutral-400 mb-6 px-2">Enter at least 4 letters and numbers</div> -->
-			<input type="password" name="checkLoginPw" id="checkLoginPw" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="Password Check">
-<!-- 			<div class="text-neutral-400 mb-6 px-2">Enter your password again to confirm it</div> -->
-			<input type="text" name="name" id="name" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="Name">
-			<input type="text" name="nickName" id="nickName" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="NickName">
-			<input type="text" name="cellPhone" id="cellPhone" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="cell-phone">
-			<input type="email" name="email" id="email" class="mb-6 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="e-mail">
- 		</div>
- 		<button type="submit" class="py-2.5 px-5 me-2 mb-2 w-96 text-sm font-large bg-neutral-800 text-neutral-200 rounded-lg hover:bg-neutral-700">Join</button>
-	</form>
-	<div class="sub-menu text-center my-4 flex justify-center">
-		<a class="hover:text-underline" href="login">Login</a>	
-	</div>
-</div>
+</section>
+
+
 
 <%@ include file="../common/foot.jspf"%>

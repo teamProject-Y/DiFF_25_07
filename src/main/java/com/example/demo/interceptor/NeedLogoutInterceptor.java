@@ -22,7 +22,7 @@ public class NeedLogoutInterceptor implements HandlerInterceptor {
 
 		if (rq.isLogined()) {
 
-			rq.printHistoryBack("로그아웃 하고 와");
+			rq.printHistoryBack("로그아웃 하고 사용해야함(NeedLogoutInterceptor)");
 
 			return false;
 		}

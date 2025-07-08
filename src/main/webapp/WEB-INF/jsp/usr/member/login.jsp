@@ -5,25 +5,48 @@
 <%@ include file="../common/head.jspf"%>
 
 
-<div class="container mx-auto mt-32 max-w-min p-4 bg-neutral-200 border border-solid border-neutral-300 rounded-lg">
-		<div class="title mt-4 mb-8 text-center text-2xl font-semibold">
-			Login
-		</div>
-		<form name="login" action="doLogin" method="POST">
-			
-			<div style="display:flex; flex-direction:column; justify-content: center;">
-	  			
-				<input type="text" name="loginId" class="mb-6 bg-neutral-50 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96 p-2.5" placeholder="ID">
-				<input type="text" name="loginPw" class="mb-6 bg-neutral-50 border border-neutral-300 text-neutral-800 text-sm rounded-lg block w-96  p-2.5" placeholder="Password">
+<section class="mt-8 text-xl px-4">
+	<div class="mx-auto">
+		<form action="../member/doLogin" method="POST">
+			<input type="hidden" name="afterLoginUri" value="${param.afterLoginUri}" />
+			<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+				<tbody>
+					<tr>
+						<th>아이디</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name="loginId" autocomplete="off" type="text" placeholder="아이디 입력" />
+						</td>
+					</tr>
+					<tr>
+						<th>비밀번호</th>
+						<td style="text-align: center;">
+							<input class="input input-primary" name="loginPw" autocomplete="off" type="text" placeholder="비밀번호 입력" />
+						</td>
+					</tr>
 
-	 		</div>
-	 		<button type="submit" class="py-2.5 px-5 me-2 mb-2 w-96 text-sm font-large bg-neutral-800 text-neutral-200 rounded-lg hover:bg-neutral-700">Login</button>
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<button class="btn btn-ghost">로그인</button>
+						</td>
+					</tr>
+					<tr>
+						<th></th>
+						<td style="text-align: center;">
+							<a class="btn btn-outline btn-primary" href="${rq.findLoginIdUri }">아이디 찾기</a>
+							<a class="btn btn-outline btn-success" href="${rq.findLoginPwUri }">비밀번호찾기</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</form>
-		<div class="sub-menu text-center my-4 flex justify-center">
-			<a class="hover:text-underline" href="join">Join</a>
-<!-- 			<a class="hover:text-underline"  href="#">Find ID</a> -->
-<!-- 			<a class="hover:text-underline"  href="#">Find Password</a>		 -->
+		<div class="btns">
+			<button class="btn btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
+
 		</div>
 	</div>
+</section>
+
+
 
 <%@ include file="../common/foot.jspf"%>
