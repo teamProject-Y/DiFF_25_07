@@ -26,7 +26,7 @@
             Login
         </button>
 
-        <button class="gsi-material-button" style="width:392">
+        <button class="gsi-material-button" style="width:392px;">
   <div class="gsi-material-button-state"></div>
   <div class="gsi-material-button-content-wrapper">
     <div class="gsi-material-button-icon">
