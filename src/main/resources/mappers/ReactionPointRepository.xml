@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
- PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.example.repository.ReactionPointRepository">
+<mapper namespace="com.example.demo.repository.ReactionRepository">
 
-	<insert id="addGoodReactionPoint">
-		INSERT INTO reactionPoint
-		SET
-		regDate = NOW(),
-		updateDate = NOW(),
-		memberId = #{memberId},
-		relTypeCode =
-		#{relTypeCode},
-		relId = #{relId},
-		`point` = 1;
-	</insert>
-
-	<insert id="addBadReactionPoint">
-		INSERT INTO reactionPoint
-		SET
-		regDate = NOW(),
-		updateDate = NOW(),
-		memberId = #{memberId},
-		relTypeCode =
-		#{relTypeCode},
-		relId = #{relId},
-		`point` = -1;
-	</insert>
-
-	<select id="getSumReactionPoint">
-		SELECT IFNULL(SUM(RP.point),0)
-		FROM reactionPoint AS
-		RP
-		WHERE RP.relTypeCode = #{relTypeCode}
-		AND RP.relId = #{relId}
-		AND
-		RP.memberId = #{memberId};
+	<select id="getUserReaction" parameterType="map">
+		SELECT IFNULL((SELECT `point`
+					   FROM reactionPoint
+					   WHERE relTypeCode = #{relTypeCode}
+						 AND relId = #{id}
+						 AND memberId = #{loginedMemberId}), 0)
 	</select>
 
-	<delete id="deleteReactionPoint">
-		DELETE FROM reactionPoint
-		WHERE memberId = #{memberId}
-		AND relTypeCode = #{relTypeCode}
-		AND relId = #{relId}
-	</delete>
+	<select id="getIsReactioned" parameterType="map">
+		SELECT COUNT(*)
+		FROM reactionPoint
+		WHERE relTypeCode = #{relTypeCode}
+		  AND relId = #{id}
+		  AND memberId = #{loginedMemberId}
+	</select>
+
+	<insert id="doGoodReaction" parameterType="map">
+		INSERT INTO reactionPoint SET
+			regDate = NOW(),
+		updateDate = NOW(),
+		memberId = #{loginedMemberId},
+			relTypeCode = #{relTypeCode} ,
+			relId = #{id},
+			`point` = 1
+	</insert>
+
+	<insert id="doBadReaction" parameterType="map">
+		INSERT INTO reactionPoint SET
+			regDate = NOW(),
+		updateDate = NOW(),
+		memberId = #{loginedMemberId},
+			relTypeCode = #{relTypeCode} ,
+			relId = #{id},
+			`point` = -1
+	</insert>
+
+	<update id="doChangeReaction" parameterType="map">
+		UPDATE reactionPoint SET
+								 updateDate = NOW(),
+								 `point` = #{point}
+		WHERE memberId =  #{loginedMemberId}
+		  AND relId =  #{id}
+		  AND relTypeCode= #{relTypeCode}
+	</update>
 
 </mapper>
