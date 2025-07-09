@@ -5,6 +5,15 @@
 
 <mapper namespace="com.example.demo.repository.MemberRepository">
 
+	<select id="getByOauthId" resultType="org.example.vo.Member">
+		SELECT * FROM member WHERE oauthId = #{oauthId}
+	</select>
+
+	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO member (oauthId, nickName, email)
+		VALUES (#{oauthId}, #{nickName}, #{email})
+	</insert>
+
 	<insert id="doJoin" parameterType="map">
 		INSERT INTO `member` SET
 		regDate = NOW(),

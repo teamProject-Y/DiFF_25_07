@@ -12,15 +12,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Member {
+	
+	public Member(String loginId, String loginPw, String name, String nickName, String cellPhone, String email) {
+		this.loginId = loginId;
+		this.loginPw = loginPw;
+		this.name = name;
+		this.nickName = nickName;
+		this.cellPhone = cellPhone;
+		this.email = email;
+	}
 
 	private int id;
 	private LocalDateTime regDate;
-	private LocalDateTime updateDate;
 	private String loginId;
 	private String loginPw;
 	private String name;
-	private String nickname;
-	private String cellphoneNum;
+	private String nickName;
+	private String cellPhone;
 	private String email;
 	private boolean delStatus;
 	private LocalDateTime delDate;
