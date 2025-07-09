@@ -3,10 +3,10 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.repository.ReplyRepository">
+<mapper namespace="com.example.repository.ReplyRepository">
 
 	<select id="getForPrintReplies"
-		resultType="com.example.demo.vo.Reply">
+		resultType="com.example.vo.Reply">
 		SELECT R.*, M.nickname AS extra__writer
 		FROM reply AS R
 		INNER JOIN `member` AS M

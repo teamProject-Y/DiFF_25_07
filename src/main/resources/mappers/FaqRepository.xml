@@ -3,10 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.repository.FaqRepository">
+<mapper namespace="com.example.repository.FaqRepository">
 
 	<select id="getFaq"
-		resultType="com.example.demo.vo.Faq">
+		resultType="com.example.vo.Faq">
 		SELECT * 
 		FROM faq
 		WHERE title LIKE CONCAT('%', #{question}, '%')

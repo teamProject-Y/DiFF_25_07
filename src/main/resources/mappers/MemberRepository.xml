@@ -3,9 +3,9 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.repository.MemberRepository">
+<mapper namespace="com.example.repository.MemberRepository">
 
-	<select id="getByOauthId" resultType="org.example.vo.Member">
+	<select id="getByOauthId" resultType="com.example.vo.Member">
 		SELECT * FROM member WHERE oauthId = #{oauthId}
 	</select>
 
@@ -34,7 +34,7 @@
 	</select>
 
 	<select id="getMemberByNameAndEmail" parameterType="string"
-		resultType="com.example.demo.vo.Member">
+		resultType="com.example.vo.Member">
 		SELECT * FROM `member`
 		WHERE `name` = #{name}
 		AND email =
@@ -42,13 +42,13 @@
 	</select>
 
 	<select id="getMemberByLoginId" parameterType="string"
-		resultType="com.example.demo.vo.Member">
+		resultType="com.example.vo.Member">
 		SELECT * FROM `member`
 		WHERE loginId = #{loginId}
 	</select>
 
 	<select id="getMemberById" parameterType="int"
-		resultType="com.example.demo.vo.Member">
+		resultType="com.example.vo.Member">
 		SELECT * FROM `member`
 		WHERE id = #{id}
 	</select>
