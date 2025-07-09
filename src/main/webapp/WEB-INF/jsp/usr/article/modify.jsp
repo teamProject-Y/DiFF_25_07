@@ -4,63 +4,36 @@
 <c:set var="pageTitle" value="ARTICLE MODIFY"></c:set>
 <%@ include file="../common/head.jspf"%>
 
+<button onclick="history.back()" class="block text-4xl pl-10 cursor-pointer">
+	<i class="fa-solid fa-angle-left"></i>
+</button>
 
-<section class=2"mt-8 text-xl px-4">
-	<div class="mx-auto">
-		<form action="../article/doModify" method="POST">
-			<input type="hidden" name="id" value="${article.id}" />
-			<table class="table"  border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
-				<tbody>
-					<tr>
-						<th style="text-align: center;">ID</th>
-						<td style="text-align: center;">${article.id}</td>
-					</tr>
-					<tr>
-						<th style="text-align: center;">Registration Date</th>
-						<td style="text-align: center;">${article.regDate}</td>
-					</tr>
-					<tr>
-						<th style="text-align: center;">Update Date</th>
-						<td style="text-align: center;">${article.updateDate}</td>
-					</tr>
-					<tr>
-						<th style="text-align: center;">Writer</th>
-						<td style="text-align: center;">${article.extra__writer }</td>
-					</tr>
-					<tr>
-						<th style="text-align: center;">Title</th>
-						<td style="text-align: center;">
-							<input class="input input-primary input-sm" required="required" name="title" value="${article.title }" type="text"
-								autocomplete="off" placeholder="새 제목" />
-						</td>
-					</tr>
-					<tr>
-						<th style="text-align: center;">Body</th>
-						<td style="text-align: center;">
-							<input class="input input-primary input-sm" required="required" name="body" value="${article.body }" type="text"
-								autocomplete="off" placeholder="새 내용" />
-						</td>
-					</tr>
-					<tr>
-						<th></th>
-						<td style="text-align: center;">
-							<button class="btn btn-primary">수정</button>
-						</td>
-					</tr>
-
-				</tbody>
-			</table>
+<div class="container mx-auto">
+<div class="title text-neutral-800 text-4xl font-bold mx-2 my-6">
+	<span>
+	Article ${article.id} Modify
+	</span>
+</div>
+	<div class="border bg-neutral-100 border-neutral-400 rounded-3xl px-8 py-5">
+		<form action="doModify" method="POST">
+			<div style="display: flex; flex-direction: column; justify-content: center;">
+				<input type="hidden" name="id" value="${article.id}">
+				제목
+				<div class="border border-neutral-500 border-solid rounded-md overflow-hidden">
+					<input class="w-full p-2" required="required" type="text" name="title" value="${article.title}">
+				</div>
+				<br>
+				내용
+				<div class="border border-neutral-500 border-solid rounded-md overflow-hidden">
+					<textarea class="w-full p-2"  required="required" name="body">${article.body}</textarea>
+				</div>
+				<br>
+				<div class="flex justify-end">
+					<button class="border border-neutral-400 rounded-lg px-3 py-2 hover:bg-neutral-300" 
+					type="submit">수정하기</button>
+				</div>
+			</div>
 		</form>
-		<div class="btns">
-			<button class="btn btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
-			<c:if test="${article.userCanDelete }">
-				<a class="btn btn-ghost" href="../article/doDelete?id=${article.id}">삭제</a>
-			</c:if>
-		</div>
-
 	</div>
-</section>
-
-
-
+</div>
 <%@ include file="../common/foot.jspf"%>
