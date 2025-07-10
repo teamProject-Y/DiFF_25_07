@@ -23,6 +23,7 @@ public class Member {
 	}
 
 	private int id;
+	private String oauthId;
 	private LocalDateTime regDate;
 	private String loginId;
 	private String loginPw;

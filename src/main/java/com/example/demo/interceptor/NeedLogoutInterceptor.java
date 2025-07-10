@@ -9,6 +9,8 @@ import com.example.demo.vo.Rq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+
 @Component
 public class NeedLogoutInterceptor implements HandlerInterceptor {
 
@@ -22,7 +24,7 @@ public class NeedLogoutInterceptor implements HandlerInterceptor {
 
 		if (rq.isLogined()) {
 
-			rq.printHistoryBack("로그아웃 하고 와");
+			rq.printHistoryBack("로그아웃 하고 사용해야함(NeedLogoutInterceptor)");
 
 			return false;
 		}

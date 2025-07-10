@@ -33,4 +33,7 @@ public interface MemberRepository {
 	public Member getMemberByLoginId(String loginId);
 
 	public int modifyMember(int loginedMemberId, String loginId, String loginPw, String name, String nickName, String cellPhone, String email);
+
+	Member getByOauthId(String oauthId);
+	void save(Member member);
 }
