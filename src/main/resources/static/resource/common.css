@@ -32,10 +32,7 @@ li {
 .comments-box hr:first-of-type {
 	display: none;
 }
-
-
-/*구글 소셜 로그인 버튼*/
-
+/* 구글 소셜 로그인 */
 .gsi-material-button {
 	-moz-user-select: none;
 	-webkit-user-select: none;

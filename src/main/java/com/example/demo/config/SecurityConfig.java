@@ -20,19 +20,35 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/usr/member/login").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/", "/usr/home/main",
+                                "/css/**", "/js/**", "/images/**",
+                                "/usr/member/login", "/usr/member/doLogin",
+                                "/usr/member/join", "/usr/member/doJoin",
+                                "/oauth2/**", "/login/**","/WEB-INF/jsp/usr/member/login.jsp"
+                        ).permitAll()
+                        .anyRequest().authenticated() //
                 )
+                .formLogin(form -> form
+                        .loginPage("/usr/member/login")
+                        .loginProcessingUrl("/usr/member/doLogin")
+                        .usernameParameter("loginId")
+                        .passwordParameter("loginPw")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/usr/member/login?error=true")
+                        .permitAll()
+                )
+
                 .oauth2Login(oauth -> oauth
                         .loginPage("/usr/member/login")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(gitHubOAuth2UserService)
                         )
-                        .defaultSuccessUrl("/main", true)
+                        .defaultSuccessUrl("/usr/home/main", true)
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // 기본값이므로 생략 가능
-                        .logoutSuccessUrl("/login")// 로그아웃 후 이동 경로
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/usr/member/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );

@@ -23,8 +23,9 @@ public class Member {
 	}
 
 	private int id;
-	private String loginId;
 	private String oauthId;
+	private LocalDateTime regDate;
+	private String loginId;
 	private String loginPw;
 	private String name;
 	private String nickName;
@@ -32,6 +33,4 @@ public class Member {
 	private String email;
 	private boolean delStatus;
 	private LocalDateTime delDate;
-	private LocalDateTime regDate;
-	private LocalDateTime updateDate;
 }
