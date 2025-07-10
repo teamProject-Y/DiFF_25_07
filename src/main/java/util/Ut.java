@@ -28,33 +28,47 @@ public class Ut {
 	}
 
 	public static String jsReplace(String resultCode, String msg, String replaceUri) {
-		
-		if(resultCode == null) resultCode = "";
-		if(msg == null) msg = "";
-		if(replaceUri == null) msg = "/";
-		
+		if (resultCode == null) resultCode = "";
+		if (msg == null) msg = "";
+		if (replaceUri == null || replaceUri.trim().isEmpty()) replaceUri = "/";
+
+		// ✅ 이미 /로 시작하면 추가 슬래시 붙이지 말기
+		if (!replaceUri.startsWith("/")) {
+			replaceUri = "/" + replaceUri.trim().replaceAll("^/+", "");
+		}
+		replaceUri = replaceUri.replaceAll("/{2,}", "/");
+
+		System.out.println("🔁 Redirecting to: " + replaceUri);
+
 		String resultMsg = resultCode + " : " + msg;
-		
+
 		return Ut.f("""
-				<script>
-					let resultMsg = '%s'.trim();
-
-					if(resultMsg.length > 0){
-						alert(resultMsg);
-					}
-
-					location.replace('%s');
-				</script>
-				""", resultMsg, replaceUri);
+	<script>
+		let resultMsg = '%s'.trim();
+		if(resultMsg.length > 0){
+			alert(resultMsg);
+		}
+		location.replace('%s');
+	</script>
+	""", resultMsg, replaceUri);
 	}
-	
+
+
 	public static String jsReplace(String replaceUri) {
-		
+		if (replaceUri == null || replaceUri.trim().isEmpty()) replaceUri = "/";
+// ✅ 이미 /로 시작하면 추가 슬래시 붙이지 말기
+		if (!replaceUri.startsWith("/")) {
+			replaceUri = "/" + replaceUri.trim().replaceAll("^/+", "");
+		}
+		replaceUri = "/" + replaceUri.trim().replaceAll("^/+", "").replaceAll("/{2,}", "/");
+
+		System.out.println("🔁 Redirecting to: " + replaceUri); // 로그 확인
+
 		return Ut.f("""
-				<script>
-					location.replace('%s');
-				</script>
-				""", replaceUri);
+		<script>
+			location.replace('%s');
+		</script>
+		""", replaceUri);
 	}
 
 	public static String jsHistoryBack(String resultCode, String msg) {

@@ -30,7 +30,7 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/github"
             client-name: GitHub
 
-          google:
+          google:  # ? Google ?? ??
             client-id:
             client-secret:
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
@@ -57,3 +57,4 @@ logging:
   level:
     org.mybatis: DEBUG
     org.example.repository: DEBUG
+    org.springframework.security: DEBUG

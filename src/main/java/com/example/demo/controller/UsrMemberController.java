@@ -33,8 +33,8 @@ public class UsrMemberController {
 	
 	@RequestMapping("/usr/member/join")
 	public String join() {
-		
-		return "/usr/member/join";
+
+		return "usr/member/join";
 	}
 	
 	// 액션메서드
@@ -57,44 +57,44 @@ public class UsrMemberController {
 		
 		Member member = memberService.getMemberById(id);
 		
-		return Ut.jsReplace("S-1", Ut.f("%s 님 회원가입을 축하", nickName), "/");
+		return Ut.jsReplace("S-1", Ut.f("%s 님 회원가입을 축하", nickName), "usr/home/main");
 	}
 	
 	@RequestMapping("/usr/member/login")
 	public String login() {
-		
-		return "/usr/member/login";
+		System.out.println("login 메서드 진입");
+		return "usr/member/login";
 	}
-	
+
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
 	public String doLogin(HttpServletRequest req, String loginId, String loginPw) {
-		
+
 		Rq rq = (Rq) req.getAttribute("rq");
-		
+
 		if(Ut.isEmpty(loginId)) return Ut.jsHistoryBack("F-1", "아이디 입력해주세요");
 		if(Ut.isEmpty(loginPw)) return Ut.jsHistoryBack("F-2", "비밀번호 입력햇주세요");
-		
+
 		Member member = memberService.getMemberByLoginId(loginId);
-		
+
 		if(member == null) return Ut.jsHistoryBack("F-3", "존재하지 않는 아이디에요");
 		if(!member.getLoginPw().equals(loginPw)) return Ut.jsHistoryBack("F-A", "올바르지 않은 비밀번호에요");
-	
-		rq.login(member);
 
-		return Ut.jsReplace("S-1", Ut.f("%s님 환영합니다", member.getNickName()), "/");
+		rq.login(member);
+		System.out.println("🛫 로그인 후 이동할 URI: /usr/home/main");
+		return Ut.jsReplace("S-1", Ut.f("%s님 환영합니다", member.getNickName()), "usr/home/main");
 	}
-	
+
 	@RequestMapping("/usr/member/doLogout")
 	@ResponseBody
 	public String doLogout(HttpServletRequest req) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
-		
+
 		rq.logout();
-		
-		return Ut.jsReplace("S-1", "로그아웃 되었습니다", "/");
-		
+
+		return Ut.jsReplace("S-1", "로그아웃 되었습니다", "usr/home/main");
+
 	}
 	
 	@RequestMapping("/usr/member/myInfo")
@@ -105,7 +105,7 @@ public class UsrMemberController {
 		
 		model.addAttribute("member", member);
 		
-		return "/usr/member/myInfo";
+		return "usr/member/myInfo";
 	}
 
 	@RequestMapping("/usr/member/modify")
@@ -116,7 +116,7 @@ public class UsrMemberController {
 		
 		model.addAttribute("member", member);
 		
-		return "/usr/member/modify";
+		return "usr/member/modify";
 	}
 	
 	@RequestMapping("/usr/member/checkPw")
