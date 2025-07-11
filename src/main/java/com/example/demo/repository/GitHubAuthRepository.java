@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface GitHubAuthRepository {
     void save(GitHubAuth auth);
 
-    GitHubAuth findLatestByMemberId(int memberId);
+    GitHubAuth findLatestByMemberId(Long memberId);
 }

@@ -25,7 +25,7 @@ public class GitHubRepoController {
 
     @GetMapping("/github/repos")
     public List<Map> getUserRepos() {
-        int memberId = rq.getLoginedMemberId();
+        Long memberId = (long) rq.getLoginedMemberId();
 
         GitHubAuth auth = gitHubAuthService.getLatestTokenByMemberId(memberId);
         String accessToken = auth.getAccessToken();

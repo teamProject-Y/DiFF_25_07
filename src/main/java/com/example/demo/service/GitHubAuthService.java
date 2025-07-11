@@ -22,7 +22,7 @@ public class GitHubAuthService {
         gitHubAuthRepository.save(auth);
     }
 
-    public GitHubAuth getLatestTokenByMemberId(int memberId) {
+    public GitHubAuth getLatestTokenByMemberId(Long memberId) {
         return gitHubAuthRepository.findLatestByMemberId(memberId);
     }
 
