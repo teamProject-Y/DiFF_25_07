@@ -30,23 +30,31 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauthUser = super.loadUser(userRequest);
+        // ✅ super.loadUser() 호출 가능해짐
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // github 또는 google
 
-        String oauthId = oauthUser.getName();
-        String username = oauthUser.getAttribute("login");
-        String email = oauthUser.getAttribute("email");
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        String oauthId = null;
+        String nickName = null;
+        String email = null;
 
-        // 회원 가입 or 조회
-        memberService.processOAuthPostLogin(oauthId, username, email);
-
-        // ✅ DB에서 Member 객체 가져옴
-        Member member = memberService.getByOauthId(oauthId);
-
-        if (member != null) {
-            session.setAttribute("loginedMemberId", member.getId()); // ✅ 로그인 세션 주입
+        if ("github".equals(registrationId)) {
+            oauthId = attributes.get("id").toString();
+            nickName = (String) attributes.get("login");
+            email = fetchPrimaryEmail(userRequest); // GitHub는 별도 호출
+        } else if ("google".equals(registrationId)) {
+            oauthId = attributes.get("sub").toString();
+            nickName = (String) attributes.get("name");
+            email = (String) attributes.get("email");
+        } else {
+            throw new OAuth2AuthenticationException("Unsupported provider: " + registrationId);
         }
 
-        return oauthUser;
+        // 🔧 사용자 정보를 DB에 저장 또는 조회
+        memberService.processOAuthPostLogin(oauthId, nickName, email);
+
+        return oAuth2User;
     }
 
     // 📡 GitHub 사용자 이메일 추가 요청
