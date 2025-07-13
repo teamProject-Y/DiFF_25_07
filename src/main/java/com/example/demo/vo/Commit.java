@@ -8,19 +8,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class Repository {
+public class Commit {
     private Long id;
     private Long memberId;
-    private Long githubId;
-    private String title;
-    private String url;
-    private Long lastRequestCommitId;
-    private Boolean delStatus;
-    private LocalDateTime delDate;
+    private Long repositoryId;
+    private String message;
+    private Long diffSummary;
+    private Long qualityScore;
+    private String commitHash;
     private LocalDateTime regDate;
-    private LocalDateTime updateDate;
-    private String owner;
+    private LocalDateTime requestDate;
 }

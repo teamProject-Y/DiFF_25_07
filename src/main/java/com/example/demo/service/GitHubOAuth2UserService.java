@@ -39,7 +39,7 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
     @Autowired
     private RepositoryRepository repositoryRepository;
     @Autowired
-    private HttpSession session; // ✅ 세션 접근
+    private HttpSession session;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -52,10 +52,10 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
 
         if ("github".equals(registrationId)) {
             username = oauthUser.getAttribute("login");
-            email = fetchPrimaryEmail(userRequest); // 🔥 GitHub 전용
+            email = fetchPrimaryEmail(userRequest);
         } else if ("google".equals(registrationId)) {
             username = oauthUser.getAttribute("name");
-            email = oauthUser.getAttribute("email"); // ✅ 이거면 충분함
+            email = oauthUser.getAttribute("email");
         }
 
         memberService.processOAuthPostLogin(oauthId, username, email);
@@ -73,17 +73,14 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
             gitHubAuthService.saveGitHubToken((long) member.getId(), accessToken, tokenType, scope);
             saveGitHubRepos(accessToken, (long) member.getId());
         } else {
-            System.out.println("✅ Google 로그인 - GitHub 관련 처리 생략");
+            System.out.println("Google 로그인 - GitHub 관련 처리 생략");
         }
 
         return oauthUser;
     }
 
 
-    // 📡 GitHub 사용자 이메일 추가 요청
     private String fetchPrimaryEmail(OAuth2UserRequest userRequest) {
-        System.out.println("🌐 fetchPrimaryEmail() 호출됨");
-
         String accessToken = userRequest.getAccessToken().getTokenValue();
         String emailApiUrl = "https://api.github.com/user/emails";
 
@@ -100,7 +97,6 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
                 new ParameterizedTypeReference<>() {}
         );
 
-        System.out.println("📡 이메일 API 응답 상태: " + response.getStatusCode());
 
         if (response.getStatusCode() == HttpStatus.OK) {
             List<Map<String, Object>> emails = response.getBody();
@@ -111,7 +107,6 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
                 Boolean verified = (Boolean) emailEntry.get("verified");
                 String email = (String) emailEntry.get("email");
 
-                System.out.println("🔹 email: " + email + ", primary: " + primary + ", verified: " + verified);
 
                 if (Boolean.TRUE.equals(primary) && Boolean.TRUE.equals(verified)) {
                     System.out.println("✅ primary & verified 이메일 선택됨: " + email);
@@ -120,23 +115,20 @@ public class GitHubOAuth2UserService extends DefaultOAuth2UserService
             }
         }
 
-        System.out.println("⚠️ 이메일을 가져오지 못했습니다.");
         return null;
     }
 
     private void saveGitHubRepos(String accessToken, Long memberId) {
         List<Map> repoMapList = gitHubService.fetchGitHubRepos(accessToken);
-        System.out.println("📦 깃허브 리포지토리 개수: " + repoMapList.size());
 
         List<Repository> repos = repositoryService.convertGitHubRepoMapToEntity(repoMapList, memberId);
 
         for (Repository repo : repos) {
             Repository existing = repositoryRepository.findByGithubIdAndMemberId(repo.getGithubId(), memberId);
             if (existing == null) {
-                System.out.println("🆕 신규 리포지토리 저장: " + repo.getTitle());
                 repositoryRepository.save(repo);
             } else {
-                System.out.println("ℹ️ 이미 존재하는 리포지토리: " + repo.getTitle());
+                System.out.println("이미 존재하는 리포지토리: " + repo.getTitle());
             }
         }
     }

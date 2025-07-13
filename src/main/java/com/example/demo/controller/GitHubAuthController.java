@@ -23,10 +23,10 @@ public class GitHubAuthController {
         String tokenType = authorizedClient.getAccessToken().getTokenType().getValue();
         String scope = String.join(",", authorizedClient.getAccessToken().getScopes());
 
-        // ✅ memberId는 로그인한 사용자 ID로 매핑 필요 (임시로 1 사용)
-        Long memberId = 1L; // ⚠️ 나중엔 세션 or rq.getLoginedMemberId()로 가져와야 함
+
+        Long memberId = 1L;
 
         gitHubAuthService.saveGitHubToken(memberId, accessToken, tokenType, scope);
-        return "✅ GitHub token saved for memberId = " + memberId;
+        return "GitHub token saved for memberId = " + memberId;
     }
 }

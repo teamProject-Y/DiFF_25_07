@@ -44,7 +44,6 @@ public class Rq {
 	}
 	public void setLoginedMember(Member member) {
 		if (member == null) {
-			System.err.println("❌ setLoginedMember()에 null이 전달되었습니다.");
 			return;
 		}
 
