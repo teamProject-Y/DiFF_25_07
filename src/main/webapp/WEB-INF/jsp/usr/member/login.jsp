@@ -41,7 +41,7 @@
     </a>
 
 <div class="flex justify-center mt-4">
-  <a href="/oauth2/authorization/google" class="gsi-material-button" style="width: 392px;">
+  <a href="/oauth2/authorization/google" class="gsi-material-button">
     <div class="gsi-material-button-state"></div>
     <div class="gsi-material-button-content-wrapper">
       <div class="gsi-material-button-icon">
