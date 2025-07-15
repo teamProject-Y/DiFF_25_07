@@ -24,15 +24,15 @@ spring:
       client:
         registration:
           github:
-            client-id: "your-client-id"
-            client-secret: "your-client-secret"
+            client-id:
+            client-secret:
             scope: user:email
             redirect-uri: "{baseUrl}/login/oauth2/code/github"
             client-name: GitHub
 
           google:  # ? Google ?? ??
-            client-id: "your-client-id"
-            client-secret: "your-client-secret"
+            client-id:
+            client-secret:
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
             scope:
               - profile

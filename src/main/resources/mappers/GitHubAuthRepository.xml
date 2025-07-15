@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.repository.GitHubAuthRepository">
+
+    <insert id="save" parameterType="com.example.demo.vo.GitHubAuth">
+        INSERT INTO githubAuth (memberId, accessToken, tokenType, scope, fetchedAt)
+        VALUES (#{memberId}, #{accessToken}, #{tokenType}, #{scope}, NOW())
+    </insert>
+
+    <select id="findLatestByMemberId" resultType="com.example.demo.vo.GitHubAuth">
+        SELECT *
+        FROM githubAuth
+        WHERE memberId = #{memberId}
+        ORDER BY fetchedAt DESC
+            LIMIT 1
+    </select>
+
+</mapper>
