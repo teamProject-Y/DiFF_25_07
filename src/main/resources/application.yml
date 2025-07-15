@@ -32,7 +32,7 @@ spring:
 
           google:  # ? Google ?? ??
             client-id:
-            client-secret:
+            client-secret: 
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
             scope:
               - profile

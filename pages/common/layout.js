@@ -3,7 +3,7 @@ import Script from 'next/script'
 import Head from 'next/head'
 import Header from './header'
 
-export default function Layout({ children, pageTitle = 'DiFF' }) {
+export default function Layout({ children, pageTitle = 'DiFF', member }) {
     return (
         <>
             <Head>
@@ -13,7 +13,7 @@ export default function Layout({ children, pageTitle = 'DiFF' }) {
             </Head>
             {/* 이 안에서만 렌더링 */}
             <div className="text-neutral-600">
-                <Header />
+                <Header member={member} />
                 <main>{children}</main>
             </div>
         </>

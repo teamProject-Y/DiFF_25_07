@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.service.FaqService;
 import com.example.demo.vo.Faq;
 import com.example.demo.vo.ResultData;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class UsrHomeController {

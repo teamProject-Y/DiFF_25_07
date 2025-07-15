@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/usr/member/doLogin")
                         .usernameParameter("loginId")
                         .passwordParameter("loginPw")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("http://localhost:3000/", true)
                         .failureUrl("/usr/member/login?error=true")
                         .permitAll()
                 )
@@ -44,11 +44,11 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(gitHubOAuth2UserService)
                         )
-                        .defaultSuccessUrl("/usr/home/main", true)
+                        .defaultSuccessUrl("http://localhost:3000/home/main", true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/usr/member/login")
+                        .logoutSuccessUrl("http://localhost:3000/member/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );
