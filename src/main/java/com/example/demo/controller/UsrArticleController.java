@@ -31,7 +31,7 @@ import util.Ut;
 @Controller
 public class UsrArticleController {
 
-	private final BeforeActionInterceptor beforeActionInterceptor;
+    private final BeforeActionInterceptor beforeActionInterceptor;
 
 	@Autowired
 	private Rq rq;
@@ -41,26 +41,26 @@ public class UsrArticleController {
 
 	@Autowired
 	private BoardService boardService;
-
+	
 	@Autowired
 	private LikeService likeService;
-
+	
 	@Autowired
 	private ReactionService reactionService;
-
+	
 	@Autowired
 	private CommentService commentService;
 
-	UsrArticleController(BeforeActionInterceptor beforeActionInterceptor) {
-		this.beforeActionInterceptor = beforeActionInterceptor;
-	}
+    UsrArticleController(BeforeActionInterceptor beforeActionInterceptor) {
+        this.beforeActionInterceptor = beforeActionInterceptor;
+    }
 
 	// 액션메서드
 	@RequestMapping("/usr/article/detail")
 	public String getArticle(Model model, HttpServletRequest req, int id) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
-
+		
 		// 검색 기준 article 조회
 		Article article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 		// article 필드에 작성자, 게시판 이름, 수정 삭제 권한, 좋아요 싫어요 합계 개수 저장
@@ -69,135 +69,135 @@ public class UsrArticleController {
 		// 댓글 조회
 		List<Comment> comments = commentService.getComments(id, (int) rq.getLoginedMemberId());
 		model.addAttribute("comments", comments);
-
+		
 		return "/usr/article/detail";
 	}
-
+	
 	@RequestMapping("/usr/article/doGoodReaction")
 	@ResponseBody
 	public ResultData doGoodReaction(HttpServletRequest req,@RequestParam int id,@RequestParam(name="relTypeCode") String relTypeCode) {
-
+		
 		Rq rq = (Rq) req.getAttribute("rq");
 
 		ResultData doReactionRd;
-
+		
 		if(rq.getLoginedMemberId() <= 0) {
 			return null;
 		}
-
+		
 		if(relTypeCode.equals("article")) {
 			doReactionRd = doGoodToArticle((int) rq.getLoginedMemberId(), id);
-
+			
 		}else {
 			doReactionRd = articleService.userReaction((int) rq.getLoginedMemberId(), id);
 			// comment 업데이트 함수 구현
 		}
-
+		
 		return doReactionRd;
 	}
-
+	
 	private ResultData doGoodToArticle(int loginedMemberId, int articleId) {
-
+		
 		Article article;
 		ResultData doReactionRd = articleService.userReaction(loginedMemberId, articleId);
-
+		
 		if(doReactionRd == null) {
 			// 삽입
 			reactionService.doGoodReaction((int) rq.getLoginedMemberId(), articleId, "article");
 			article = articleService.getArticleForPrint(articleId, loginedMemberId);
 			doReactionRd = ResultData.from("S-1","reaction 성공", "싫어요", article);
-
+			
 		}else if((int)doReactionRd.getData1() == 1) {
 			// 취소
 			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), articleId, 0, "article");
 			article = articleService.getArticleForPrint(articleId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요 취소",article);
-
+			
 		}else {
 			// 수정
 			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), articleId, 1, "article");
 			article = articleService.getArticleForPrint(articleId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요로 수정", article);
 		}
-
+		
 		return doReactionRd;
-
+		
 	}
-
+	
 	// 수정 필요
 	private ResultData doGoodToComment(int loginedMemberId, int commentId) {
-
+		
 		Article article;
 		ResultData doReactionRd = articleService.userReaction(loginedMemberId, commentId);
-
+		
 		if(doReactionRd == null) {
 			// 삽입
 			reactionService.doGoodReaction((int) rq.getLoginedMemberId(), commentId, "commentId");
 			article = articleService.getArticleForPrint(commentId, loginedMemberId);
 			doReactionRd = ResultData.from("S-1","reaction 성공", "싫어요", article);
-
+			
 		}else if((int)doReactionRd.getData1() == 1) {
 			// 취소
 			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), commentId, 0, "commentId");
 			article = articleService.getArticleForPrint(commentId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요 취소",article);
-
+			
 		}else {
 			// 수정
 			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), commentId, 1, "commentId");
 			article = articleService.getArticleForPrint(commentId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요로 수정", article);
 		}
-
+		
 		return doReactionRd;
-
+		
 	}
-
+	
 	@RequestMapping("/usr/article/doBadReaction")
 	@ResponseBody
 	public ResultData doBadReaction(HttpServletRequest req,@RequestParam int id,@RequestParam(name="relTypeCode") String relTypeCode) {
-
+		
 		Rq rq = (Rq) req.getAttribute("rq");
 		ResultData doReactionRd = articleService.userReaction((int) rq.getLoginedMemberId(), id);
-
+		
 		Article article;
-
+		
 		if(doReactionRd == null) {
-
+			
 			reactionService.doBadReaction((int) rq.getLoginedMemberId(), id, "article");
 			article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 			doReactionRd = ResultData.from("S-1","reaction 성공", "싫어요", article);
-
+			
 		}else if((int)doReactionRd.getData1() == -1) {
-
+			
 			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), id, 0, "article");
 			article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 			doReactionRd = doReactionRd.newData(doReactionRd, "싫어요 취소", article);
-
+			
 		}else {
-
+			
 			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), id, -1, "article");
 			article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 			doReactionRd = doReactionRd.newData(doReactionRd, "싫어요로 수정", article);
 		}
-
+		
 		return doReactionRd;
 	}
-
+	
 	@RequestMapping("/usr/article/doIncHits")
 	@ResponseBody
 	public ResultData doIncHits(int id) {
-
+		
 		ResultData increaseHitCountRd = articleService.doIncHits(id);
-
+		
 		if (increaseHitCountRd.isFail()) {
 			return increaseHitCountRd;
 		}
-
-		return ResultData.from(increaseHitCountRd.getResultCode(), increaseHitCountRd.getMsg(),
+		
+		return ResultData.from(increaseHitCountRd.getResultCode(), increaseHitCountRd.getMsg(), 
 				"hitCount", articleService.getHits(id), "article id", id);
 	}
-
+	
 	@RequestMapping("/usr/article/doCommentWrite")
 	@ResponseBody
 	public String doCommentWrite(HttpServletRequest req, int id, String body) {
@@ -214,24 +214,24 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/list")
 	public String getArticles(Model model, String keyword, @RequestParam(defaultValue = "0") int boardId,
-							  @RequestParam(defaultValue = "1") int searchItem, @RequestParam(defaultValue = "1") int page) {
-
+			@RequestParam(defaultValue = "1") int searchItem, @RequestParam(defaultValue = "1") int page) {
+		
 		Board board = boardService.getBoardById(boardId);
-
+		
 		// pagenation
 		int itemsInAPage = 10; // 한페이지에 보여줄 게시글 수
 		int limitFrom = (page - 1) * itemsInAPage; // 몇번부터
-
+		
 		int totalCnt =articleService.getArticlesCnt(keyword, boardId, searchItem); // 검색한 article의 총 개수
 		int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage); // article 나누기 page
-
+		
 		List<Article> articles = articleService.getArticles(keyword, boardId, searchItem, limitFrom, itemsInAPage);
 
 		model.addAttribute("articles", articles);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("boardId", boardId);
 		model.addAttribute("searchItem", searchItem);
-
+		
 		model.addAttribute("page", page);
 		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("totalPage", totalPage);

@@ -30,9 +30,9 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/github"
             client-name: GitHub
 
-          google:  # ? Google ?? ??
+          google:
             client-id:
-            client-secret:
+            client-secret: 
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
             scope:
               - profile

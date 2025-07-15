@@ -62,6 +62,4 @@
 
 </div>
 
-
-
 <%@ include file="../common/foot.jspf"%>
