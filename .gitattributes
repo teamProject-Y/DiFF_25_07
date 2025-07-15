@@ -1,2 +1,5 @@
-/mvnw text eol=lf
+* text=auto eol=lf
+mvnw text eol=lf
 *.cmd text eol=crlf
+frontend/node_modules/** -text
+node_modules/** -text

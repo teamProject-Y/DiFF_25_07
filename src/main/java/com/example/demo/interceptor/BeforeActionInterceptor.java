@@ -27,7 +27,7 @@ public class BeforeActionInterceptor implements HandlerInterceptor {
 
 		// 로그인 상태면, 매 요청마다 Member 객체를 세팅
 		if (rq.isLogined()) {
-			Member member = memberService.getMemberById(rq.getLoginedMemberId());
+			Member member = memberService.getMemberById((long) rq.getLoginedMemberId());
 			rq.setLoginedMember(member);
 		}
 

@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/usr/home/main",
-                                "/css/**", "/js/**", "/images/**",
+                                "/resource/**","/css/**", "/js/**", "/images/**",
                                 "/usr/member/login", "/usr/member/doLogin",
                                 "/usr/member/join", "/usr/member/doJoin",
                                 "/oauth2/**", "/login/**","/WEB-INF/jsp/usr/member/login.jsp"
