@@ -58,4 +58,6 @@ logging:
     org.mybatis: DEBUG
     org.example.repository: DEBUG
     org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework.security.oauth2.client: DEBUG
+    org.springframework.security.oauth2.core.endpoint: DEBUG

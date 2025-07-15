@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import com.example.demo.interceptor.BeforeActionInterceptor;
 import com.example.demo.interceptor.NeedLoginInterceptor;
 import com.example.demo.interceptor.NeedLogoutInterceptor;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
 public class WebMvcConfigurer implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {

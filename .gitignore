@@ -32,3 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 /temp/
+
+### Dependencies ###
+node_modules/
+frontend/node_modules/
+.next/

@@ -75,7 +75,7 @@ public class UsrArticleController {
 	
 	@RequestMapping("/usr/article/doGoodReaction")
 	@ResponseBody
-	public ResultData doGoodReaction(HttpServletRequest req, int id, String relTypeCode) {
+	public ResultData doGoodReaction(HttpServletRequest req,@RequestParam int id,@RequestParam(name="relTypeCode") String relTypeCode) {
 		
 		Rq rq = (Rq) req.getAttribute("rq");
 
@@ -155,7 +155,7 @@ public class UsrArticleController {
 	
 	@RequestMapping("/usr/article/doBadReaction")
 	@ResponseBody
-	public ResultData doBadReaction(HttpServletRequest req, int id, String rec) {
+	public ResultData doBadReaction(HttpServletRequest req,@RequestParam int id,@RequestParam(name="relTypeCode") String relTypeCode) {
 		
 		Rq rq = (Rq) req.getAttribute("rq");
 		ResultData doReactionRd = articleService.userReaction(rq.getLoginedMemberId(), id);
