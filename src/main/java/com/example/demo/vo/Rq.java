@@ -26,7 +26,7 @@ public class Rq {
 
 	private Member loginedMember;
 	private boolean isLogined = false;
-	private int loginedMemberId = 0;
+	private long loginedMemberId = 0;
 	private String loginedMemberNickName;
 
 
@@ -37,7 +37,7 @@ public class Rq {
 
 		if (session.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
-			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+			loginedMemberId = (long) session.getAttribute("loginedMemberId");
 		}
 
 		this.req.setAttribute("rq", this);
@@ -48,10 +48,9 @@ public class Rq {
 		}
 
 		this.loginedMember = member;
-		this.loginedMemberId = member.getId();
-		this.loginedMemberNickName = member.getNickName();
-		this.isLogined = true;
-
+		System.out.println("rq");
+		this.loginedMemberId = (int) member.getId();
+		this.loginedMemberNickName= member.getNickName();
 		System.out.println("Nickname = " + loginedMember.getNickName());
 		System.out.println("Nickname = " + loginedMemberNickName);
 	}

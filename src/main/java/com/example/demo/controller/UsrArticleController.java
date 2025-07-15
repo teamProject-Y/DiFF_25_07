@@ -62,12 +62,12 @@ public class UsrArticleController {
 		Rq rq = (Rq) req.getAttribute("rq");
 		
 		// 검색 기준 article 조회
-		Article article = articleService.getArticleForPrint(id, rq.getLoginedMemberId());
+		Article article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 		// article 필드에 작성자, 게시판 이름, 수정 삭제 권한, 좋아요 싫어요 합계 개수 저장
 		model.addAttribute("article", article);
 
 		// 댓글 조회
-		List<Comment> comments = commentService.getComments(id, rq.getLoginedMemberId());
+		List<Comment> comments = commentService.getComments(id, (int) rq.getLoginedMemberId());
 		model.addAttribute("comments", comments);
 		
 		return "/usr/article/detail";
@@ -86,10 +86,10 @@ public class UsrArticleController {
 		}
 		
 		if(relTypeCode.equals("article")) {
-			doReactionRd = doGoodToArticle(rq.getLoginedMemberId(), id);
+			doReactionRd = doGoodToArticle((int) rq.getLoginedMemberId(), id);
 			
 		}else {
-			doReactionRd = articleService.userReaction(rq.getLoginedMemberId(), id);
+			doReactionRd = articleService.userReaction((int) rq.getLoginedMemberId(), id);
 			// comment 업데이트 함수 구현
 		}
 		
@@ -103,19 +103,19 @@ public class UsrArticleController {
 		
 		if(doReactionRd == null) {
 			// 삽입
-			reactionService.doGoodReaction(rq.getLoginedMemberId(), articleId, "article");
+			reactionService.doGoodReaction((int) rq.getLoginedMemberId(), articleId, "article");
 			article = articleService.getArticleForPrint(articleId, loginedMemberId);
 			doReactionRd = ResultData.from("S-1","reaction 성공", "싫어요", article);
 			
 		}else if((int)doReactionRd.getData1() == 1) {
 			// 취소
-			reactionService.doChangeReaction(rq.getLoginedMemberId(), articleId, 0, "article");
+			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), articleId, 0, "article");
 			article = articleService.getArticleForPrint(articleId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요 취소",article);
 			
 		}else {
 			// 수정
-			reactionService.doChangeReaction(rq.getLoginedMemberId(), articleId, 1, "article");
+			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), articleId, 1, "article");
 			article = articleService.getArticleForPrint(articleId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요로 수정", article);
 		}
@@ -132,19 +132,19 @@ public class UsrArticleController {
 		
 		if(doReactionRd == null) {
 			// 삽입
-			reactionService.doGoodReaction(rq.getLoginedMemberId(), commentId, "commentId");
+			reactionService.doGoodReaction((int) rq.getLoginedMemberId(), commentId, "commentId");
 			article = articleService.getArticleForPrint(commentId, loginedMemberId);
 			doReactionRd = ResultData.from("S-1","reaction 성공", "싫어요", article);
 			
 		}else if((int)doReactionRd.getData1() == 1) {
 			// 취소
-			reactionService.doChangeReaction(rq.getLoginedMemberId(), commentId, 0, "commentId");
+			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), commentId, 0, "commentId");
 			article = articleService.getArticleForPrint(commentId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요 취소",article);
 			
 		}else {
 			// 수정
-			reactionService.doChangeReaction(rq.getLoginedMemberId(), commentId, 1, "commentId");
+			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), commentId, 1, "commentId");
 			article = articleService.getArticleForPrint(commentId, loginedMemberId);
 			doReactionRd = doReactionRd.newData(doReactionRd, "좋아요로 수정", article);
 		}
@@ -158,26 +158,26 @@ public class UsrArticleController {
 	public ResultData doBadReaction(HttpServletRequest req,@RequestParam int id,@RequestParam(name="relTypeCode") String relTypeCode) {
 		
 		Rq rq = (Rq) req.getAttribute("rq");
-		ResultData doReactionRd = articleService.userReaction(rq.getLoginedMemberId(), id);
+		ResultData doReactionRd = articleService.userReaction((int) rq.getLoginedMemberId(), id);
 		
 		Article article;
 		
 		if(doReactionRd == null) {
 			
-			reactionService.doBadReaction(rq.getLoginedMemberId(), id, "article");
-			article = articleService.getArticleForPrint(id, rq.getLoginedMemberId());
+			reactionService.doBadReaction((int) rq.getLoginedMemberId(), id, "article");
+			article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 			doReactionRd = ResultData.from("S-1","reaction 성공", "싫어요", article);
 			
 		}else if((int)doReactionRd.getData1() == -1) {
 			
-			reactionService.doChangeReaction(rq.getLoginedMemberId(), id, 0, "article");
-			article = articleService.getArticleForPrint(id, rq.getLoginedMemberId());
+			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), id, 0, "article");
+			article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 			doReactionRd = doReactionRd.newData(doReactionRd, "싫어요 취소", article);
 			
 		}else {
 			
-			reactionService.doChangeReaction(rq.getLoginedMemberId(), id, -1, "article");
-			article = articleService.getArticleForPrint(id, rq.getLoginedMemberId());
+			reactionService.doChangeReaction((int) rq.getLoginedMemberId(), id, -1, "article");
+			article = articleService.getArticleForPrint(id, (int) rq.getLoginedMemberId());
 			doReactionRd = doReactionRd.newData(doReactionRd, "싫어요로 수정", article);
 		}
 		
@@ -207,7 +207,7 @@ public class UsrArticleController {
 		if (Ut.isEmpty(body) || body.trim().length() == 0)
 			return Ut.jsHistoryBack("F-1", "내용 안썻어");
 
-		int commentId = commentService.doCommentWrtie("article", id, rq.getLoginedMemberId(), body);
+		int commentId = commentService.doCommentWrtie("article", id, (int) rq.getLoginedMemberId(), body);
 
 		return Ut.jsReplace(Ut.f("../article/detail?id=%d", id));
 	}
@@ -257,7 +257,7 @@ public class UsrArticleController {
 		if (boardId == 0)
 			return Ut.jsHistoryBack("F-3", "게시판 선택해주시오");
 
-		Article article = articleService.writeArticle(title, body, rq.getLoginedMemberId(), boardId);
+		Article article = articleService.writeArticle(title, body, (int) rq.getLoginedMemberId(), boardId);
 		int id = articleService.getLastInsertId();
 
 		return Ut.jsReplace("S-1", Ut.f("게시글 %d 번 작성 완료", id), Ut.f("../article/detail?id=%d", id));

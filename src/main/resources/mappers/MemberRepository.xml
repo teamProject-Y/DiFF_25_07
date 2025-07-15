@@ -28,7 +28,7 @@
 		SELECT LAST_INSERT_ID()
 	</select>
 	
-	<select id="getMemberById" parameterType="int"
+	<select id="getMemberById" parameterType="java.lang.Long"
 		resultType="com.example.demo.vo.Member">
 		SELECT * FROM `member`
 		WHERE id = #{id}
