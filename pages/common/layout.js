@@ -1,4 +1,5 @@
 // common/layout.js
+import Script from 'next/script'
 import Head from 'next/head'
 import Header from './header'
 

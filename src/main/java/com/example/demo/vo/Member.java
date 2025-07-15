@@ -22,7 +22,7 @@ public class Member {
 		this.email = email;
 	}
 
-	private int id;
+	private long id;
 	private String oauthId;
 	private LocalDateTime regDate;
 	private String loginId;
