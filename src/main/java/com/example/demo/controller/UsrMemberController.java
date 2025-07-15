@@ -140,7 +140,7 @@ public class UsrMemberController {
 	public String doModify(HttpServletRequest req, String loginId, String loginPw, String name, String nickName, String cellPhone, String email) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
-		int loginedMemberId = rq.getLoginedMemberId();
+		long loginedMemberId = rq.getLoginedMemberId();
 		
 //		if(Ut.isEmpty(loginId)) return Ut.jsHistoryBack("F-1", "아이디를 쓰시오");
 //		if(memberService.isUsableLoginId(loginId)) return Ut.jsHistoryBack("F-7", "사용 중인 아이디입니다.");
