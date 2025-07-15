@@ -18,7 +18,7 @@ public class MemberService {
 		this.memberRepository = memberRepository;
 	}
 	
-	public Member getMemberById(int id) {
+	public Member getMemberById(Long id) {
 		
 		return memberRepository.getMemberById(id);
 	}
@@ -37,7 +37,7 @@ public class MemberService {
 		return memberRepository.getMemberByLoginId(loginId);
 	}
 
-	public int modifyMember(int loginedMemberId, String loginId, String loginPw, String name, String nickName, String cellPhone, String email) {
+	public int modifyMember(long loginedMemberId, String loginId, String loginPw, String name, String nickName, String cellPhone, String email) {
 		return memberRepository.modifyMember(loginedMemberId, loginId, loginPw, name, nickName, cellPhone, email);
 	}
 

@@ -21,7 +21,7 @@ public interface MemberRepository {
 	public int getLastInsertId();
 
 //  @Select("SELECT * FROM `member` WHERE loginId = #{loginId}")
-	public Member getMemberById(int id);
+	public Member getMemberById(Long id);
 
 //  @Select("SELECT COUNT(*) FROM `member` WHERE loginId = #{loginId}")
 	public int isJoinableLogInId(String loginId);
@@ -32,7 +32,7 @@ public interface MemberRepository {
 //  @Select("SELECT * FROM `member` WHERE loginId = #{loginId}")
 	public Member getMemberByLoginId(String loginId);
 
-	public int modifyMember(int loginedMemberId, String loginId, String loginPw, String name, String nickName, String cellPhone, String email);
+	public int modifyMember(long loginedMemberId, String loginId, String loginPw, String name, String nickName, String cellPhone, String email);
 
 	Member getByOauthId(String oauthId);
 	void save(Member member);

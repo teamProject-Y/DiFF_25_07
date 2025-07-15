@@ -32,3 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 .DS_Store
+/temp/
+
+### Dependencies ###
+node_modules/
+frontend/node_modules/
+.next/
