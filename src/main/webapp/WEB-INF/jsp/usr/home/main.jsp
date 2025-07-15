@@ -7,6 +7,11 @@
 
 <div>
 	메인입니다.
+	<form action="/analyzeZip" method="post" enctype="multipart/form-data">
+  <input type="file" name="zipFile" accept=".zip" required />
+  <button type="submit">분석 요청</button>
+</form>
+
 </div>
 
 <%@ include file="../common/foot.jspf"%>

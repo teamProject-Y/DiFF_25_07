@@ -29,6 +29,4 @@ public class GitHubAuthService {
         return gitHubAuthRepository.findLatestByMemberId(memberId);
     }
 
-    public GitHubAuth getTokenByMemberId(Long memberId) {
-    }
 }

@@ -1,0 +1,27 @@
+{
+  "name": "diff_25_07",
+  "version": "1.0.0",
+  "description": "*** > **개발을 공부하는 모든 사람**을 위한 학습 기록 플랫폼",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teamProject-Y/DiFF_25_07.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/teamProject-Y/DiFF_25_07/issues"
+  },
+  "homepage": "https://github.com/teamProject-Y/DiFF_25_07#readme",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "commander": "^14.0.0",
+    "dotenv": "^17.2.0",
+    "simple-git": "^3.28.0"
+  }
+}
