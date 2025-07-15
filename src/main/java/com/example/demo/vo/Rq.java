@@ -42,16 +42,19 @@ public class Rq {
 
 		this.req.setAttribute("rq", this);
 	}
-
 	public void setLoginedMember(Member member) {
+		if (member == null) {
+			return;
+		}
+
 		this.loginedMember = member;
 		System.out.println("rq");
 		this.loginedMemberId = (int) member.getId();
 		this.loginedMemberNickName= member.getNickName();
 		System.out.println("Nickname = " + loginedMember.getNickName());
 		System.out.println("Nickname = " + loginedMemberNickName);
-		this.isLogined = true;
 	}
+
 
 	public void printHistoryBack(String msg) throws IOException {
 		resp.setContentType("text/html; charset=UTF-8");
@@ -74,8 +77,13 @@ public class Rq {
 	}
 
 	public void logout() {
-		session.removeAttribute("loginedMemberId");
+		session.invalidate(); // ✅ 전체 세션 무효화
+		this.loginedMember = null;
+		this.isLogined = false;
+		this.loginedMemberId = 0;
+		this.loginedMemberNickName = null;
 	}
+
 
 	public void login(Member member) {
 		session.setAttribute("loginedMemberId", member.getId());
