@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Member {
-	
+
 	public Member(String loginId, String loginPw, String name, String nickName, String cellPhone, String email) {
 		this.loginId = loginId;
 		this.loginPw = loginPw;
@@ -22,7 +22,7 @@ public class Member {
 		this.email = email;
 	}
 
-	private int id;
+	private long id;
 	private String oauthId;
 	private LocalDateTime regDate;
 	private String loginId;

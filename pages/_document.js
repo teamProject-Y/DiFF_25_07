@@ -15,10 +15,16 @@ export default class MyDocument extends Document {
                         rel="stylesheet"
                         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
                     />
+                    {/* daisyUI 스타일 불러오기 */}
                     <link
+                        href="https://cdn.jsdelivr.net/npm/daisyui@5"
                         rel="stylesheet"
-                        href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.css"
+                        type="text/css"
                     />
+                    {/* Tailwind 브라우저 플러그인 로드 (필수!) */}
+                    <script
+                        src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"
+                    ></script>
                     <link
                         rel="stylesheet"
                         href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"

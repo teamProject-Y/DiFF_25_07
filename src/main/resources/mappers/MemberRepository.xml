@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.repository.MemberRepository">
 	<select id="getByOauthId" resultType="com.example.demo.vo.Member">
@@ -17,40 +17,40 @@
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		loginId = #{loginId},
-		loginPw = #{loginPw},
-		`name` = #{name},
-		nickName = #{nickName},
-		cellPhone = #{cellPhone},
-		email = #{email}
+			loginPw = #{loginPw},
+			`name` = #{name},
+			nickName = #{nickName},
+			cellPhone = #{cellPhone},
+			email = #{email}
 	</insert>
 
 	<select id="getLastInsertId" parameterType="int">
 		SELECT LAST_INSERT_ID()
 	</select>
-	
-	<select id="getMemberById" parameterType="int"
-		resultType="com.example.demo.vo.Member">
+
+	<select id="getMemberById" parameterType="java.lang.Long"
+			resultType="com.example.demo.vo.Member">
 		SELECT * FROM `member`
 		WHERE id = #{id}
 	</select>
-	
+
 	<select id="isJoinableLogInId" parameterType="String">
 		SELECT COUNT(*) FROM `member`
 		WHERE loginId = #{loginId}
 	</select>
-	
+
 	<select id="isExistsNameNEmail" parameterType="String">
 		SELECT COUNT(*) FROM `member`
 		WHERE `name` = #{name} AND
-		email = #{email}
+			email = #{email}
 	</select>
-	
+
 	<select id="getMemberByLoginId" parameterType="String"
-		resultType="com.example.demo.vo.Member">
+			resultType="com.example.demo.vo.Member">
 		SELECT * FROM `member`
 		WHERE loginId = #{loginId}
 	</select>
-	
+
 	<update id="modifyMember" parameterType="map">
 		UPDATE `member`
 		<set>

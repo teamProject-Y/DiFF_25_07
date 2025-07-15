@@ -26,7 +26,7 @@ public class Rq {
 
 	private Member loginedMember;
 	private boolean isLogined = false;
-	private int loginedMemberId = 0;
+	private long loginedMemberId = 0;
 	private String loginedMemberNickName;
 
 
@@ -37,25 +37,21 @@ public class Rq {
 
 		if (session.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
-			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+			loginedMemberId = (long) session.getAttribute("loginedMemberId");
 		}
 
 		this.req.setAttribute("rq", this);
 	}
+
 	public void setLoginedMember(Member member) {
-		if (member == null) {
-			return;
-		}
-
 		this.loginedMember = member;
-		this.loginedMemberId = member.getId();
-		this.loginedMemberNickName = member.getNickName();
-		this.isLogined = true;
-
+		System.out.println("rq");
+		this.loginedMemberId = (int) member.getId();
+		this.loginedMemberNickName= member.getNickName();
 		System.out.println("Nickname = " + loginedMember.getNickName());
 		System.out.println("Nickname = " + loginedMemberNickName);
+		this.isLogined = true;
 	}
-
 
 	public void printHistoryBack(String msg) throws IOException {
 		resp.setContentType("text/html; charset=UTF-8");
@@ -78,13 +74,8 @@ public class Rq {
 	}
 
 	public void logout() {
-		session.invalidate(); // ✅ 전체 세션 무효화
-		this.loginedMember = null;
-		this.isLogined = false;
-		this.loginedMemberId = 0;
-		this.loginedMemberNickName = null;
+		session.removeAttribute("loginedMemberId");
 	}
-
 
 	public void login(Member member) {
 		session.setAttribute("loginedMemberId", member.getId());
