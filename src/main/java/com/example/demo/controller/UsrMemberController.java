@@ -13,9 +13,10 @@ import com.example.demo.vo.Rq;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.RestController;
 import util.Ut;
 
-@Controller
+@RestController
 public class UsrMemberController {
 
     private final BeforeActionInterceptor beforeActionInterceptor;
@@ -50,7 +51,7 @@ public class UsrMemberController {
 		if(Ut.isEmpty(email) || !email.contains("@")) return Ut.jsHistoryBack("F-6", "이메일 정확히 쓰시오");
 		if(!loginPw.equals(checkLoginPw)) return Ut.jsHistoryBack("F-7", "비밀번호가 일치하지 않소");
 
-		int id = memberService.doJoin(loginId, loginPw, name, nickName, cellPhone, email);
+		long id = memberService.doJoin(loginId, loginPw, name, nickName, cellPhone, email);
 		
 		if(id == -1) return Ut.jsHistoryBack("F-8", Ut.f("%s는 이미 사용 중인 아이디입니다.", loginId));
 		if(id == -2) return Ut.jsHistoryBack("F-9", Ut.f("이름 %s과 이메일 %s은(는) 이미 사용 중입니다.", loginId, email));
@@ -101,7 +102,7 @@ public class UsrMemberController {
 	public String myInfo(Model model, HttpServletRequest req) {
 		
 		Rq rq = (Rq) req.getAttribute("rq");
-		Member member = memberService.getMemberById(rq.getLoginedMemberId());
+		Member member = memberService.getMemberById((long) rq.getLoginedMemberId());
 		
 		model.addAttribute("member", member);
 		
@@ -112,7 +113,7 @@ public class UsrMemberController {
 	public String modify(Model model, HttpServletRequest req) {
 		
 		Rq rq = (Rq) req.getAttribute("rq");
-		Member member = memberService.getMemberById(rq.getLoginedMemberId());
+		Member member = memberService.getMemberById((long) rq.getLoginedMemberId());
 		
 		model.addAttribute("member", member);
 		
@@ -124,7 +125,7 @@ public class UsrMemberController {
 	public ResultData checkPw(HttpServletRequest req, String pw) {
 		
 		Rq rq = (Rq) req.getAttribute("rq");
-		Member member = memberService.getMemberById(rq.getLoginedMemberId());
+		Member member = memberService.getMemberById((long) rq.getLoginedMemberId());
 		
 		if(!member.getLoginPw().equals(pw)) {
 			return ResultData.from("F-1", "비밀번호 불일치");			
