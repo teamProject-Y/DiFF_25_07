@@ -60,7 +60,7 @@ li {
 	transition: background-color .218s, border-color .218s, box-shadow .218s;
 	vertical-align: middle;
 	white-space: nowrap;
-	width: auto;
+	width: 392px;
 	max-width: 400px;
 	min-width: min-content;
 }
