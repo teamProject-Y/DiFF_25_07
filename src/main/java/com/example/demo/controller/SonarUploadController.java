@@ -127,6 +127,7 @@ public class SonarUploadController {
 
         sonarQubeService.deleteProject(projectKey);
         System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
+        System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
     }
 
 
