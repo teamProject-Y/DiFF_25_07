@@ -6,14 +6,15 @@ import org.springframework.stereotype.Controller;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.Enumeration;
 import java.util.zip.*;
 
 @Controller
 public class SonarUploadController {
 
-    @PostMapping("/upload-source")
+    @PostMapping("/analyzeZip")
     @ResponseBody
-    public String uploadSource(@RequestParam("file") MultipartFile zipFile) throws IOException {
+    public String uploadSource(@RequestParam("zipFile") MultipartFile zipFile) throws IOException {
         // 1. 임시 디렉토리 생성
         Path tempDir = Files.createTempDirectory("source-");
         File tempDirFile = tempDir.toFile();
@@ -35,21 +36,23 @@ public class SonarUploadController {
     }
 
     private void unzip(File zipFile, File destDir) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
+        if (!destDir.exists()) destDir.mkdirs();
+
+        try (ZipFile zip = new ZipFile(zipFile)) {
+            Enumeration<? extends ZipEntry> entries = zip.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
                 File newFile = new File(destDir, entry.getName());
+
                 if (entry.isDirectory()) {
                     newFile.mkdirs();
-                } else {
-                    newFile.getParentFile().mkdirs();
-                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                        byte[] buffer = new byte[1024];
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                    }
+                    continue;
+                }
+
+                newFile.getParentFile().mkdirs();
+                try (InputStream is = zip.getInputStream(entry);
+                     FileOutputStream fos = new FileOutputStream(newFile)) {
+                    is.transferTo(fos); // Java 9 이상
                 }
             }
         }
@@ -57,18 +60,44 @@ public class SonarUploadController {
 
     private void createSonarPropertiesFile(File projectDir) throws IOException {
         File propertiesFile = new File(projectDir, "sonar-project.properties");
+
+        // 기본값
+        String sourcePath = "src";
+        String binaryPath = "target/classes";
+
+        // 경로 자동 감지
+        if (new File(projectDir, "src/main/java").exists()) {
+            sourcePath = "src/main/java";
+        } else if (new File(projectDir, "src").exists()) {
+            sourcePath = "src";
+        }
+
+        if (new File(projectDir, "build/classes/java/main").exists()) {
+            binaryPath = "build/classes/java/main";
+        } else if (new File(projectDir, "target/classes").exists()) {
+            binaryPath = "target/classes";
+        }
+
         try (PrintWriter writer = new PrintWriter(propertiesFile)) {
             writer.println("sonar.projectKey=Diff");
             writer.println("sonar.projectName=Diff");
             writer.println("sonar.projectVersion=1.0");
-            writer.println("sonar.sources=.");
+
+            writer.println("sonar.sources=" + sourcePath);
+            writer.println("sonar.java.binaries=" + binaryPath);
             writer.println("sonar.java.source=17");
-            writer.println("sonar.host.url=http://localhost:9000");
-            writer.println("sonar.login=YOUR_SONAR_TOKEN"); // 🔁 여기 사용자 토큰으로 변경
+
+
         }
     }
 
+
+
     private void runSonarScanner(File projectDir) throws IOException {
+        // 🔍 디버깅용 로그 추가
+        System.out.println("📁 Sonar 분석 디렉토리: " + projectDir.getAbsolutePath());
+        System.out.println("📄 properties 존재함? " + new File(projectDir, "sonar-project.properties").exists());
+
         ProcessBuilder pb = new ProcessBuilder("sonar-scanner");
         pb.directory(projectDir);
         pb.redirectErrorStream(true);
@@ -81,4 +110,5 @@ public class SonarUploadController {
             }
         }
     }
+
 }

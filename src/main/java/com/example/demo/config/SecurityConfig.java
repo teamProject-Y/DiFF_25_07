@@ -19,13 +19,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/usr/home/main",
                                 "/resource/**","/css/**", "/js/**", "/images/**",
                                 "/usr/member/login", "/usr/member/doLogin",
                                 "/usr/member/join", "/usr/member/doJoin",
-                                "/oauth2/**", "/login/**","/WEB-INF/jsp/usr/member/login.jsp"
+                                "/oauth2/**", "/login/**","/WEB-INF/jsp/usr/member/login.jsp","/analyzeZip"
                         ).permitAll()
                         .anyRequest().authenticated() //
                 )
@@ -55,4 +56,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
