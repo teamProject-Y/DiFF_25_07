@@ -14,8 +14,8 @@ program
     .option('--full-code', '변경 전 코드 포함')
     .option('--last-only', '첫커밋과 마지막 커밋만 추적')
     .action((branch, options) => {
-        console.log(chalk.green("초안 작성 시작"));
-        console.log('Branch:', chalk.yellow(branch));
+        console.log("Making to draft...");
+        console.log('*', chalk.green(branch));
         console.log('Options:', options);
     });
 
