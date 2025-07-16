@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.SonarQubeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Controller;
@@ -9,9 +11,11 @@ import java.nio.file.*;
 import java.util.Enumeration;
 import java.util.zip.*;
 
+
 @Controller
 public class SonarUploadController {
-
+    @Autowired
+    private SonarQubeService sonarQubeService;
     @PostMapping("/analyzeZip")
     @ResponseBody
     public String uploadSource(@RequestParam("zipFile") MultipartFile zipFile) throws IOException {
@@ -91,8 +95,6 @@ public class SonarUploadController {
         }
     }
 
-
-
     private void runSonarScanner(File projectDir) throws IOException {
         // 🔍 디버깅용 로그 추가
         System.out.println("📁 Sonar 분석 디렉토리: " + projectDir.getAbsolutePath());
@@ -109,6 +111,23 @@ public class SonarUploadController {
                 System.out.println("▶ " + line);
             }
         }
+
+        String projectKey = "DiFF"; // TODO: 나중에 사용자 ID + 커밋 ID로 동적 생성
+
+        try {
+            Thread.sleep(3000); // 분석 완료 대기
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        String resultJson = sonarQubeService.getAnalysisResult(projectKey);
+        System.out.println("📊 분석 결과: " + resultJson);
+
+        // TODO: resultJson 파싱해서 DB 저장
+
+        sonarQubeService.deleteProject(projectKey);
+        System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
     }
+
 
 }
