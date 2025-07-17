@@ -16,7 +16,7 @@ spring:
 
   servlet:
     multipart:
-      enabled=true:
+      enabled: true
       max-file-size: 500MB
       max-request-size: 500MB
 
@@ -65,4 +65,4 @@ logging:
 
 sonarqube:
   host: http://localhost:9000
-  token: sqp_b4ccafad1400cc15d26b1f4a4eb6d4e0c895d4f0
+  token: sqa_51b039c183b6985ee4486ab5195fd964fb4d92ba
