@@ -44,11 +44,11 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(gitHubOAuth2UserService)
                         )
-                        .defaultSuccessUrl("http://localhost:3000/home/main", true)
+                        .defaultSuccessUrl("http://localhost:3000/usr/home/main", true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("http://localhost:3000/member/" + "login")
+                        .logoutSuccessUrl("http://localhost:3000/usr/member/" + "login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );

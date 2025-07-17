@@ -24,7 +24,7 @@
 
 			<ul class="menu_ flex">
 				<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="/">HOME</a></li>
-				<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../home/faq">FAQ</a></li>
+				<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../usr/home/faq">FAQ</a></li>
 				<li id ="list" class="relative">
 					<a class="block px-6" href="../article/list">LIST</a>
 					<ul class="absolute hidden w-full t-full py-5 text-center text-lg whitespace-nowrap">
@@ -35,14 +35,14 @@
 					</ul>
 				</li>
 				<c:if test="${!rq.isLogined() }">
-					<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../member/login">LOGIN</a></li>
-					<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../member/join">JOIN</a></li>
+					<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../usr/member/login">LOGIN</a></li>
+					<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../usr/member/join">JOIN</a></li>
 				</c:if>
 				<c:if test="${rq.isLogined() }">
 					<li class="hover:underline hover:text-neutral-400">
-					<a onclick="return confirm('로그아웃 하시겠습니까?');" class="block px-6" href="../member/doLogout">LOGOUT</a>
+					<a onclick="return confirm('로그아웃 하시겠습니까?');" class="block px-6" href="../usr/member/doLogout">LOGOUT</a>
 					</li>
-					<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../member/myInfo">MY PAGE</a></li>
+					<li class="hover:underline hover:text-neutral-400"><a class="block px-6" href="../usr/member/myInfo">MY PAGE</a></li>
 				</c:if>
 			</ul>
 		</div>		

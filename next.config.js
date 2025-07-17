@@ -22,7 +22,7 @@ module.exports = {
             },
             {
                 source: '/',
-                destination: '/home/main',
+                destination: '/usr/home/main',
                 permanent: false
             }
         ]

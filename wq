@@ -1,0 +1,274 @@
+[33mcommit e440589092b17b7242a9e587324574ebc5d6ee3b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32myeji[m[33m)[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Thu Jul 17 09:48:03 2025 +0900
+
+    바꾸기 전 푸시
+
+[33mcommit 68cd3d6a4c1ba76bbd7b3aac93c96ef563ed0283[m[33m ([m[1;31morigin/yeji[m[33m)[m
+Merge: 844ba41 55f759f
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 21:01:32 2025 +0900
+
+    Merge branch 'main' into yeji
+
+[33mcommit 844ba4116b076cc80b632152f3dbffe448ff6ffe[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 20:51:34 2025 +0900
+
+    main 진행중
+
+[33mcommit 55f759face01744bede467f3628d507c03b56457[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Tue Jul 15 13:37:27 2025 +0900
+
+    react + sonar + CLI 병합 & 파일 정리
+    
+    react + sonar + CLI 병합 & 파일 정리
+
+[33mcommit c3a92ea704748ad3ac6b014d5644a637b1f41d76[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 12:43:22 2025 +0900
+
+    $ defined 오류 해결
+    
+    * $ defined 수정
+    * 마지막 철우 PR이랑 병합
+
+[33mcommit 935c753b8dd73023d1642e992bf84203bdb50da7[m
+Merge: ce8d256 243e522
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Tue Jul 15 12:42:15 2025 +0900
+
+    Merge branch 'main' into yeji
+
+[33mcommit ce8d2563384f63dfc3bf49b11006fb011a9fc227[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 12:19:18 2025 +0900
+
+    $ defined 수정해봄
+
+[33mcommit 243e52252a86663fdf66fb43febf7e39cf31d388[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Tue Jul 15 12:06:37 2025 +0900
+
+    sonar 중 + react 병합
+    
+    * git 로그인한 사용자 토큰 가져오는 중
+    * 사용자 리포 json형태로 가져옴
+    * 로그인 한 사용자 리포지토리 DB에 저장
+    * 커밋 작업중
+    * sonar 작업중
+    *철우가
+
+[33mcommit 56168445e67037f3d3e49edf2c2c0ebfe30544be[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 11:51:20 2025 +0900
+
+    package-lock.json 최소화
+
+[33mcommit af2ebb2f01eae4506083603e664ac452d14d1b02[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 11:24:36 2025 +0900
+
+    리액트 병합
+    
+    * SSE controller, sseEmitter
+    
+    * 리액트로 변환 (로그인만)
+    
+    * 리액트로 변환 (로그인만)
+    
+    * .next 폴더 뺌
+
+[33mcommit b52a44a69d7fe52d0cdda4c96368f900d9e50937[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 11:08:36 2025 +0900
+
+    .next 폴더 뺌
+
+[33mcommit c88032a5c1eb6b4b640f4328f2ee96be8050bdb9[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 11:01:51 2025 +0900
+
+    리액트로 변환 (로그인만)
+
+[33mcommit c0fef732fed49dfbefa6f7809b7ff004061d110a[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Tue Jul 15 10:59:52 2025 +0900
+
+    리액트로 변환 (로그인만)
+
+[33mcommit 6c52847e5d6704cfd57ca0fbb09a201c2c9bfbf1[m
+Merge: 6de15e4 310e50c
+Author: Yullc <apanan0910@gmail.com>
+Date:   Thu Jul 10 10:22:27 2025 +0900
+
+    Merge branch 'Yullc'
+
+[33mcommit 6de15e41cdc948b092d1a949a8f8d00aaaa90518[m
+Merge: 99ade8b 50e5bcf
+Author: Yullc <apanan0910@gmail.com>
+Date:   Thu Jul 10 10:21:47 2025 +0900
+
+    Merge branch 'main' of https://github.com/teamProject-Y/DiFF_25_07
+
+[33mcommit a908fcc0beccc95f9ccbbf800d9d21d04e1ada1a[m
+Merge: a109fc0 50e5bcf
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Thu Jul 10 10:11:03 2025 +0900
+
+    Merge branch 'main' into yeji
+
+[33mcommit a109fc0f9539265c7c27f0ba72a0ebdf97b5ebd7[m
+Merge: d374f9e 310e50c
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Thu Jul 10 10:09:30 2025 +0900
+
+    머지 오류 여기서 남
+
+[33mcommit 50e5bcf5c30a37d6551c4dcae72aaa01b1a9c550[m[33m ([m[1;31morigin/main-backup[m[33m)[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Thu Jul 10 10:05:53 2025 +0900
+
+    구글, 깃허브 로그인 구현
+    
+    구글, 깃허브 로그인 구현,
+    소셜 로그인 버튼 공식 버튼으로 구현
+
+[33mcommit 310e50c9802480e49dcb7aab32d5ba5d0daed37c[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Thu Jul 10 10:02:45 2025 +0900
+
+    구글, 깃허브 버튼 이미지 추가
+
+[33mcommit 20c4ab044ca5914c1cc29f27b4b0a76f820cc858[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Thu Jul 10 09:45:45 2025 +0900
+
+    구글, 깃허브 로그인 구현
+
+[33mcommit d374f9eda1507f1b738bb1702760ae36e9760dbf[m
+Author: yeji-star <sizuku134@gmail.com>
+Date:   Wed Jul 9 23:35:48 2025 +0900
+
+    SSE controller, sseEmitter
+
+[33mcommit 9a1bf2a2b52e3d993e0f8467c6f4dab86c81aeaf[m
+Merge: 609411e 99ade8b
+Author: Yullc <apanan0910@gmail.com>
+Date:   Wed Jul 9 15:51:58 2025 +0900
+
+    충돌 병합
+
+[33mcommit 99ade8b6a0833cacacda5d12f2d33a709954e65e[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Wed Jul 9 15:48:55 2025 +0900
+
+    hello 폴더의 코드 내용을 Yullc 브랜치에 덮어씀
+
+[33mcommit 609411e9a2640593286ab4f2ad30c272cf99d2c9[m
+Merge: 5638235 624761b
+Author: Yullc <apanan0910@gmail.com>
+Date:   Wed Jul 9 15:14:53 2025 +0900
+
+    구글 소셜 로그인 버튼병합
+
+[33mcommit 624761b51738f43e5442fc3b0b5135b9b49c059d[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Wed Jul 9 14:57:17 2025 +0900
+
+    .DS_Store 빼고 구글 소셜 로그인 버튼만 구현
+
+[33mcommit 5638235c5496b358458082f1467c2336a11f5e5e[m[33m ([m[1;32mYullc[m[33m)[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Wed Jul 9 11:15:38 2025 +0900
+
+    git, google 소셜 로그인 추가
+
+[33mcommit 6e6a52bd4a1d9ce476b2bbe0ecf2579aedaabb8b[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Wed Jul 9 09:53:23 2025 +0900
+
+    소셜로그인 도입 시작
+
+[33mcommit 40c57f610083d211841ca6a873fe0ed751c7e54a[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Tue Jul 8 16:25:20 2025 +0900
+
+    기본구조 병합
+
+[33mcommit 0379a951583f6a49f72c0362d3b613cdd0e6bda3[m
+Merge: 765878f 0dcef1d
+Author: Yullc <apanan0910@gmail.com>
+Date:   Tue Jul 8 16:15:14 2025 +0900
+
+    수정완료
+
+[33mcommit b44ebf6bb5b18ab5aaea228db76caee17efaa3c8[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Tue Jul 8 15:57:07 2025 +0900
+
+    기본구조 세팅 병
+
+[33mcommit 1f1118f5fe1c60c6115d95a58ae251f184aa699e[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Tue Jul 8 15:49:47 2025 +0900
+
+    기본구조 세팅 병합
+
+[33mcommit d040522b4d7384e9c0af3604a327b1878f481452[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Tue Jul 8 15:49:47 2025 +0900
+
+    기본구조 세팅 병합
+    
+    * Yullc test
+    
+    * 구조 setting
+    
+    ---------
+    
+    Co-authored-by: yunzivv <yunzivv@gmail.com>
+
+[33mcommit 765878f1ec8e35c381f4222829fc91141c2ab72e[m
+Merge: 1b698aa ca4842a
+Author: Yullc <apanan0910@gmail.com>
+Date:   Tue Jul 8 15:13:18 2025 +0900
+
+    병합완료
+
+[33mcommit ca4842a4a010ed96ccefaa2caf101699573d95a6[m[33m ([m[1;31morigin/setting[m[33m)[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Tue Jul 8 14:54:03 2025 +0900
+
+    구조 setting
+
+[33mcommit 0dcef1df69ef29751fb24bdbed42269e9d723595[m
+Author: Yullc <apanan0910@gmail.com>
+Date:   Tue Jul 8 14:40:53 2025 +0900
+
+    test1
+
+[33mcommit 456b8a819ba13f08780799c59bf6f8cddfb589ed[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Tue Jul 8 11:33:28 2025 +0900
+
+    test2
+
+[33mcommit a5bfd5796ae6ba8f57a7e27e103f262236805814[m
+Author: 정윤지 <yunzivv@MacBook-Air.local>
+Date:   Tue Jul 8 11:17:28 2025 +0900
+
+    test
+
+[33mcommit 1b698aa02e3dbd178bc18d88f6a6a7e3e4fc7f8b[m
+Author: yullc <apanan0910@gmail.com>
+Date:   Mon Jul 7 11:24:50 2025 +0900
+
+    Yullc test
+
+[33mcommit 69c3e0357b2ba011bab1f857cd9f89402a80510e[m
+Author: yunzivv <yunzivv@gmail.com>
+Date:   Mon Jul 7 09:23:49 2025 +0900
+
+    setting
