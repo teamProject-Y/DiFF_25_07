@@ -15,8 +15,9 @@ program
     .option('--last-only', '첫커밋과 마지막 커밋만 추적')
     .action((branch, options) => {
         console.log("Making to draft...");
-        console.log('*', chalk.green(branch));
+        // console.log('*', chalk.green(branch));
         console.log('Options:', options);
+        console.log('done.');
     });
 
 program.parse();
