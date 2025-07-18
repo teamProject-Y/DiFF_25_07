@@ -1,84 +1,59 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.SonarQubeService;
+import com.example.demo.service.SonarService;
+import com.example.demo.vo.Rq;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Controller;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.zip.*;
+import java.util.UUID;
 
 @Controller
 public class SonarUploadController {
 
-    @PostMapping("/upload-source")
+    @Autowired
+    private SonarQubeService sonarQubeService;
+
+    @Autowired
+    private SonarService sonarService;
+
+    @Autowired
+    private Rq rq;
+
+    @PostMapping("/upload")
     @ResponseBody
-    public String uploadSource(@RequestParam("file") MultipartFile zipFile) throws IOException {
-        // 1. 임시 디렉토리 생성
-        Path tempDir = Files.createTempDirectory("source-");
-        File tempDirFile = tempDir.toFile();
+    public ResponseEntity<String> uploadSource(@RequestParam("file") MultipartFile zipFile) {
+        try {
+            // 1. 사용자 및 커밋 기반 projectKey 생성
+            Long memberId = rq.getLoginedMemberId();
+            String commitId = UUID.randomUUID().toString();
+            String projectKey = "temp_" + memberId + "_" + commitId;
 
-        // 2. zip 파일 저장
-        Path zipPath = tempDir.resolve("source.zip");
-        zipFile.transferTo(zipPath.toFile());
+            System.out.println("👤 사용자 ID: " + memberId);
+            System.out.println("📂 생성된 Project Key: " + projectKey);
 
-        // 3. 압축 해제
-        unzip(zipPath.toFile(), tempDirFile);
+            // 2. 압축 해제 및 sonar-project.properties 생성
+            String extractedPath = sonarService.extractAndPrepare(zipFile, projectKey);
+            System.out.println("📦 압축 해제 위치: " + extractedPath);
 
-        // 4. sonar-project.properties 생성
-        createSonarPropertiesFile(tempDirFile);
+            // 3. 분석 실행
+            sonarService.runSonarScanner(extractedPath);
 
-        // 5. SonarScanner 실행
-        runSonarScanner(tempDirFile);
+            // 4. 결과 조회
+            String result = sonarQubeService.getAnalysisResult(projectKey);
+            System.out.println("📊 분석 결과: " + result);
 
-        return "✅ 분석 요청 완료 (콘솔에서 로그 확인)";
-    }
+            // 5. SonarQube 프로젝트 삭제
+            sonarQubeService.deleteProject(projectKey);
+            System.out.println("🧹 SonarQube 프로젝트 삭제 완료: " + projectKey);
 
-    private void unzip(File zipFile, File destDir) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                File newFile = new File(destDir, entry.getName());
-                if (entry.isDirectory()) {
-                    newFile.mkdirs();
-                } else {
-                    newFile.getParentFile().mkdirs();
-                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                        byte[] buffer = new byte[1024];
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void createSonarPropertiesFile(File projectDir) throws IOException {
-        File propertiesFile = new File(projectDir, "sonar-project.properties");
-        try (PrintWriter writer = new PrintWriter(propertiesFile)) {
-            writer.println("sonar.projectKey=Diff");
-            writer.println("sonar.projectName=Diff");
-            writer.println("sonar.projectVersion=1.0");
-            writer.println("sonar.sources=.");
-            writer.println("sonar.java.source=17");
-            writer.println("sonar.host.url=http://localhost:9000");
-            writer.println("sonar.login=YOUR_SONAR_TOKEN"); // 🔁 여기 사용자 토큰으로 변경
-        }
-    }
-
-    private void runSonarScanner(File projectDir) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("sonar-scanner");
-        pb.directory(projectDir);
-        pb.redirectErrorStream(true);
-        Process process = pb.start();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println("▶ " + line);
-            }
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("❌ 분석 중 오류 발생: " + e.getMessage());
         }
     }
 }
