@@ -1,0 +1,6 @@
+projectKey=DiFF
+serverUrl=http://localhost:9000
+serverVersion=25.7.0.110598
+dashboardUrl=http://localhost:9000/dashboard?id=DiFF
+ceTaskId=08912d31-5e5e-47d9-9030-4ae1a64a2b8f
+ceTaskUrl=http://localhost:9000/api/ce/task?id=08912d31-5e5e-47d9-9030-4ae1a64a2b8f

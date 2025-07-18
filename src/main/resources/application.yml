@@ -1,4 +1,5 @@
 server:
+  address: 0.0.0.0
   port: 8080
 
 spring:
@@ -16,8 +17,9 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 500MB
 
   security:
     oauth2:
@@ -32,7 +34,7 @@ spring:
 
           google:
             client-id:
-            client-secret: 
+            client-secret:
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
             scope:
               - profile
@@ -61,3 +63,7 @@ logging:
     org.springframework.security.web: DEBUG
     org.springframework.security.oauth2.client: DEBUG
     org.springframework.security.oauth2.core.endpoint: DEBUG
+
+sonarqube:
+  host: http://localhost:9000
+  token: sqp_b4ccafad1400cc15d26b1f4a4eb6d4e0c895d4f0
