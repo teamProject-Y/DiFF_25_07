@@ -7,7 +7,7 @@
 
 <div>
 	메인입니다.
-<form action="/analyzeZip" method="post" enctype="multipart/form-data">
+<form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="zipFile">
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <button type="submit">업로드</button>

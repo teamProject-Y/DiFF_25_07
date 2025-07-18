@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 
@@ -16,8 +17,8 @@ public class SonarQubeService {
     @Value("${sonarqube.token}")
     private String sonarToken;
 
-    public String getAnalysisResult(String projectKey) {
-        System.out.println("소나 토큰 : "+sonarToken);
+    public String getAnalysisResult(String projectKey) throws InterruptedException {
+        System.out.println("소나 토큰 : " + sonarToken);
         String url = sonarHost + "/api/measures/component?component=" + projectKey
                 + "&metricKeys=bugs,vulnerabilities,code_smells,coverage";
 
@@ -26,11 +27,24 @@ public class SonarQubeService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                url, HttpMethod.GET, entity, String.class);
 
-        return response.getBody();
+        int retryCount = 15; // 최대 15번 시도 (약 30초)
+        int delay = 2000;    // 2초 대기
+
+        for (int i = 0; i < retryCount; i++) {
+            try {
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+                System.out.println("✅ 분석 결과 가져오기 성공");
+                return response.getBody();
+            } catch (HttpClientErrorException.NotFound e) {
+                System.out.println("⏳ 분석 대기 중... " + (i + 1) + "/" + retryCount);
+                Thread.sleep(delay);
+            }
+        }
+
+        throw new RuntimeException("❌ 분석 결과를 가져오지 못했습니다: " + projectKey);
     }
+
 
     public void deleteProject(String projectKey) {
         String url = sonarHost + "/api/projects/delete?project=" + projectKey;
@@ -121,7 +135,7 @@ public class SonarQubeService {
             writer.println("sonar.sources=" + sourcePath);
             writer.println("sonar.java.binaries=" + binaryPath);
             writer.println("sonar.java.source=17");
-            writer.println("sonar.login=" + sonarToken);  // 토큰 추가
+            writer.println("sonar.token=" + sonarToken);  // 토큰 추가
 
         }
     }
