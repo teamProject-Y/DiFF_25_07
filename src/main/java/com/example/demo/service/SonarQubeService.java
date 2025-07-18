@@ -47,53 +47,65 @@ public class SonarQubeService {
 
 
     public void deleteProject(String projectKey) {
-        String url = sonarHost + "/api/projects/delete?project=" + projectKey;
+        String url = "http://localhost:9000/api/projects/delete?project=" + projectKey;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(sonarToken, "");
+        headers.set("Authorization", "Bearer sqa_51b039c183b6985ee4486ab5195fd964fb4d92ba");
+
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-    }
 
-    public String analyzeProject(File projectDir, String projectKey) throws IOException {
         try {
-            createSonarPropertiesFile(projectDir, projectKey);
-
-            System.out.println("📁 Sonar 분석 디렉토리: " + projectDir.getAbsolutePath());
-
-            ProcessBuilder pb = new ProcessBuilder("sonar-scanner");
-            pb.directory(projectDir);
-            pb.redirectErrorStream(true);
-            Process process = pb.start();
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println("▶ " + line);
-                }
-            }
-
-            Thread.sleep(3000); // 결과 수신 대기
-
-            String resultJson = getAnalysisResult(projectKey);
-            System.out.println("📊 분석 결과: " + resultJson);
-
-            deleteProject(projectKey); // ✅ SonarQube 서버에서 삭제
-            System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
-
-            return resultJson;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "❌ 분석 실패: " + e.getMessage();
-
-        } finally {
-            deleteDirectoryRecursively(projectDir); // ✅ 로컬 디렉토리 삭제
-            System.out.println("🧹 임시 디렉토리 삭제 완료: " + projectDir.getAbsolutePath());
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+            System.out.println("🧹 Sonar 프로젝트 삭제 성공: " + response.getBody());
+        } catch (HttpClientErrorException e) {
+            System.out.println("❌ Sonar 프로젝트 삭제 실패: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
         }
     }
+
+//    public String analyzeProject(File projectDir, String projectKey) throws IOException {
+//        try {
+//            createSonarPropertiesFile(projectDir, projectKey);
+//
+//            System.out.println("📁 Sonar 분석 디렉토리: " + projectDir.getAbsolutePath());
+//
+//            ProcessBuilder pb = new ProcessBuilder("sonar-scanner");
+//            pb.directory(projectDir);
+//            pb.redirectErrorStream(true);
+//            Process process = pb.start();
+//
+//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    System.out.println("▶ " + line);
+//                }
+//            }
+//
+//            Thread.sleep(3000); // 결과 수신 대기
+//
+//            String resultJson = getAnalysisResult(projectKey);
+//            System.out.println("📊 분석 결과: " + resultJson);
+//
+//            deleteProject(projectKey); // ✅ SonarQube 서버에서 삭제
+//            System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
+//
+//            return resultJson;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "❌ 분석 실패: " + e.getMessage();
+//
+//        } finally {
+//            deleteDirectoryRecursively(projectDir); // ✅ 로컬 디렉토리 삭제
+//            System.out.println("🧹 임시 디렉토리 삭제 완료: " + projectDir.getAbsolutePath());
+//        }
+//    }
 
     private void deleteDirectoryRecursively(File dir) {
         if (dir == null || !dir.exists()) return;
