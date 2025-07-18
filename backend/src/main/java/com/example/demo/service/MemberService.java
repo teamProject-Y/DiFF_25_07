@@ -71,4 +71,8 @@ public class MemberService {
 	public Member getByOauthId(String oauthId) {
 		return memberRepository.getByOauthId(oauthId);
 	}
+
+	public boolean isRegisteredEmail(String email) {
+		return memberRepository.isRegisteredEmail(email);
+	}
 }

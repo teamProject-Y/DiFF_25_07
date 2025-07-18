@@ -26,7 +26,8 @@ public class SecurityConfig {
                                 "/resource/**","/css/**", "/js/**", "/images/**",
                                 "/usr/member/login", "/usr/member/doLogin",
                                 "/usr/member/join", "/usr/member/doJoin",
-                                "/oauth2/**", "/login/**","/WEB-INF/jsp/usr/member/login.jsp","/upload","/api/**"
+                                "/oauth2/**", "/login/**","/WEB-INF/jsp/usr/member/login.jsp","/upload",
+                                "/api/**", "/usr/member/verifyGitUser"
                         ).permitAll()
                         .anyRequest().authenticated() //
                 )

@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.MemberService;
-import com.example.demo.vo.Member;
-import com.example.demo.vo.ResultData;
-import com.example.demo.vo.Rq;
+import com.example.demo.vo.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,5 +90,15 @@ public class UserMemberApiController {
                 dto.getCellPhone(), dto.getEmail()
         );
         return ResponseEntity.ok(ResultData.from("S-1","정보가 수정되었습니다"));
+    }
+
+
+
+    ////////// CLI
+    @PostMapping("/verifyGitUser")
+    public VerifyGitUserRP verifyGitUser(@RequestBody VerifyGitUserRQ request) {
+        System.out.println(request.getEmail());
+        boolean verified = memberService.isRegisteredEmail(request.getEmail());
+        return new VerifyGitUserRP(verified);
     }
 }

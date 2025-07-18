@@ -64,4 +64,10 @@
 		</set>
 		WHERE id = #{loginedMemberId}
 	</update>
+
+	<select id="isRegisteredEmail" parameterType="String">
+		SELECT COUNT(*) FROM `member`
+		WHERE email = #{email}
+	</select>
+
 </mapper>
