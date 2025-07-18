@@ -1,6 +1,7 @@
 // pages/usr/login.js
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export default function MemberLogin() {
     const router = useRouter()

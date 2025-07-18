@@ -1,5 +1,6 @@
 // pages/usr/member/myInfo.js
 import Link from 'next/link'
+import { getSession } from "next-auth/react"
 
 // 이 페이지에서 보여줄 title
 function MyInfo({ member }) {
@@ -55,18 +56,22 @@ function MyInfo({ member }) {
     )
 }
 
-// getServerSideProps로 Spring Boot에서 데이터 받아오기
+// SSR로 로그인된 사용자 정보 가져오기
 export async function getServerSideProps(context) {
-    const res = await fetch('http://localhost:8080/usr/member/myInfo', {
-        headers: { cookie: context.req.headers.cookie || '' },
-    })
-    if (res.status !== 200) {
-        return {
-            redirect: { destination: '/login', permanent: false },
-        }
+    const session = await getSession(context)
+
+    if(!session) {
+        return (
+            redirect: {
+                desination: "/usr/member/login",
+                permanent: false,
+            }
+        )
     }
-    const { member } = await res.json()
-    return { props: { member } }
+
+    return (
+        props: { session }
+    )
 }
 
 // Layout에서 쓸 페이지 타이틀

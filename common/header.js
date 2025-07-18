@@ -1,5 +1,6 @@
 // common/header.js
 import Link from 'next/link'
+import { getSession } from 'next-auth/react'
 
 export default function Header() {
     return (
@@ -14,24 +15,24 @@ export default function Header() {
             <nav className="items-center mr-6 text-4xl text-neutral-800">
                 <ul className="flex">
                     <li className="hover:underline hover:text-neutral-400">
-                        <Link href="/" className="block px-6">
+                        <Link href="/usr/home/main" className="block px-6">
                             HOME
                         </Link>
                     </li>
                     <li className="hover:underline hover:text-neutral-400">
-                        <Link href="/home/faq" className="block px-6">
+                        <Link href="/usr/home/faq" className="block px-6">
                             FAQ
                         </Link>
                     </li>
                     <li className="relative group">
-                        <Link href="/article/list" className="block px-6">
+                        <Link href="/usr/article/list" className="block px-6">
                             LIST
                         </Link>
                         <ul className="absolute hidden group-hover:block w-full top-full py-5 text-center text-lg whitespace-nowrap bg-white shadow-lg">
                             {['전체 게시판','공지사항','자유 게시판','QnA'].map((label, id) => (
                                 <li key={id}>
                                     <Link
-                                        href={`/article/list?boardId=${id}`}
+                                        href={`/usr/article/list?boardId=${id}`}
                                         className="block h-full p-1 hover:underline hover:text-neutral-400"
                                     >
                                         {label}

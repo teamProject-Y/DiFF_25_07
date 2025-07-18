@@ -1,8 +1,11 @@
 // pages/_app.js
 import Script from 'next/script'
 import Layout from '../common/layout'  // 네가 쓰던 그대로
+import { SessionProvider } from "next-auth/react"
 
 export default function App({ Component, pageProps }) {
+    const { session, member, ...rest } = pageProps
+
     return (
         <>
             {/* jQuery를 hydration 전에 불러오기 */}
@@ -11,10 +14,12 @@ export default function App({ Component, pageProps }) {
                 strategy="beforeInteractive"
             />
 
-            {/* 레이아웃 + 페이지 컴포넌트 */}
-            <Layout>
-                <Component {...pageProps} />
-            </Layout>
+            {/* NextAuth 세션 프로바이더로 감싸기 */}
+            <SessionProvider session={session}>
+                <Layout member={member}>
+                    <Component {...rest} />
+                </Layout>
+            </SessionProvider>
         </>
     )
 }

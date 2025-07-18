@@ -19,7 +19,7 @@
 			IFNULL(SUM(R.point), 0) AS 'extra_sumReactionPoint',
 			IFNULL(SUM(IF(R.point &gt; 0, R.point, 0)), 0) AS 'extra_goodReactionPoint',
 			IFNULL(SUM(IF(R.point &lt; 0, R.point, 0)) * -1, 0) AS 'extra_badReactionPoint'
-		FROM `comment` C
+		FROM `reply` C
 		JOIN `member` M
 		ON C.memberId = M.id
 		LEFT JOIN reactionPoint R
@@ -29,8 +29,8 @@
 		ORDER BY C.id DESC;
 	</select>
 	
-	<insert id="doCommentWrtie">
-		INSERT INTO `comment`
+	<insert id="doCommentWrite">
+		INSERT INTO `reply`
 		SET
 		regDate = NOW(),
 		updateDate = NOW(),

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Layout from '../common/layout'
+import {redirect} from "next/navigation";
 
 export default function MyInfoPage({ member }) {
     const router = useRouter()
@@ -59,14 +60,20 @@ export default function MyInfoPage({ member }) {
     )
 }
 
+// SSR로 로그인된 사용자 정보 가져오기
 export async function getServerSideProps(context) {
-    const res = await fetch('http://localhost:8080/usr/member/myInfo', {
-        headers: { cookie: context.req.headers.cookie || '' },
-        credentials: 'include',
-    })
-    if (res.status !== 200) {
-        return { redirect: { destination: '/usr/member/login', permanent: false } }
+    const session = await getSession(context)
+
+    if(!session) {
+        return (
+            redirect: {
+                desination: "/usr/member/login",
+                permanent: false,
+            }
+        )
     }
-    const member = await res.json()
-    return { props: { member } }
+
+    return (
+        props: { session }
+    )
 }

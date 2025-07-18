@@ -90,8 +90,8 @@ public class CommentService {
 
 	}
 
-	public int doCommentWrtie(String relTypeCode, int relId, int loginedMemberId, String body) {
-		return commentRepository.doCommentWrtie(relTypeCode, relId, loginedMemberId, body);
+	public int doCommentWrite(String relTypeCode, int relId, int loginedMemberId, String body) {
+		return commentRepository.doCommentWrite(relTypeCode, relId, loginedMemberId, body);
 	}
 
 }

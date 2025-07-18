@@ -207,7 +207,7 @@ public class UsrArticleController {
 		if (Ut.isEmpty(body) || body.trim().length() == 0)
 			return Ut.jsHistoryBack("F-1", "내용 안썻어");
 
-		int commentId = commentService.doCommentWrtie("article", id, (int) rq.getLoginedMemberId(), body);
+		int commentId = commentService.doCommentWrite("article", id, (int) rq.getLoginedMemberId(), body);
 
 		return Ut.jsReplace(Ut.f("../article/detail?id=%d", id));
 	}
