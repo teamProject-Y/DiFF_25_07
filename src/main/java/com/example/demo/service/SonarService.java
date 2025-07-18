@@ -48,7 +48,7 @@ public class SonarService {
             writer.println("sonar.java.binaries=target/classes");
             writer.println("sonar.java.source=17");
             writer.println("sonar.host.url=" + sonarHost);
-            writer.println("sonar.login=" + sonarToken);
+            writer.println("sonar.token=" + sonarToken);
         }
 
         return targetDir.getAbsolutePath();
@@ -80,7 +80,6 @@ public class SonarService {
         pb.redirectErrorStream(true);
         Process process = pb.start();
 
-        pb.environment().put("SONAR_TOKEN", "sqp_b4ccafad1400cc15d26b1f4a4eb6d4e0c895d4f0");
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;

@@ -28,7 +28,7 @@ public class SonarQubeService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        int retryCount = 15; // 최대 15번 시도 (약 30초)
+        int retryCount = 3;
         int delay = 2000;    // 2초 대기
 
         for (int i = 0; i < retryCount; i++) {
@@ -135,7 +135,7 @@ public class SonarQubeService {
             writer.println("sonar.sources=" + sourcePath);
             writer.println("sonar.java.binaries=" + binaryPath);
             writer.println("sonar.java.source=17");
-            writer.println("sonar.token=" + sonarToken);  // 토큰 추가
+            writer.println("sonar.login=" + sonarToken);  // 토큰 추가
 
         }
     }
