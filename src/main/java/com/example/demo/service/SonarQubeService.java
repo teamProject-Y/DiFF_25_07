@@ -7,6 +7,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.stream.Collectors;
 
 @Service
 public class SonarQubeService {
@@ -46,35 +52,34 @@ public class SonarQubeService {
     }
 
     public void deleteProject(String projectKey) {
-        String url = "http://localhost:9000/api/projects/delete?project=" + projectKey;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer sqa_51b039c183b6985ee4486ab5195fd964fb4d92ba");
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        RestTemplate restTemplate = new RestTemplate();
-
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    entity,
-                    String.class
-            );
+            String sonarBaseUrl = "http://localhost:9000";
+            String deleteUrl = sonarBaseUrl + "/api/projects/delete?project=" + URLEncoder.encode(projectKey, StandardCharsets.UTF_8);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("🧹 Sonar 프로젝트 삭제 성공: " + response.getBody());
-                System.out.println("🧹 SonarQube 프로젝트 삭제 완료: " + projectKey);
+            String adminUsername = "admin";
+            String adminPassword = "teamprojectY1!";
+
+            HttpURLConnection connection = (HttpURLConnection) new URL(deleteUrl).openConnection();
+            connection.setRequestMethod("POST");
+            String basicAuth = "Basic " + Base64.getEncoder()
+                    .encodeToString((adminUsername + ":" + adminPassword).getBytes(StandardCharsets.UTF_8));
+            connection.setRequestProperty("Authorization", basicAuth);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 204) {
+                System.out.println(" 프로젝트 삭제 성공");
             } else {
-                System.out.println("⚠️ 삭제 요청 응답 상태: " + response.getStatusCode());
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                String response = in.lines().collect(Collectors.joining());
+                in.close();
+                System.out.println(" 프로젝트 삭제 실패: " + response);
             }
 
-        } catch (HttpClientErrorException e) {
-            System.out.println("❌ Sonar 프로젝트 삭제 실패: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
-        } catch (Exception e) {
-            System.out.println("❌ 삭제 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
 
 

@@ -9,7 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class SonarUploadController {
@@ -47,13 +56,53 @@ public class SonarUploadController {
             System.out.println("📊 분석 결과: " + result);
 
             // 5. SonarQube 프로젝트 삭제
+            grantProjectAdminPermission(projectKey); // 자동으로 admin 권한 부여
+            Thread.sleep(2000);
             sonarQubeService.deleteProject(projectKey);
             System.out.println("🧹 SonarQube 프로젝트 삭제 완료: " + projectKey);
 
+
             return ResponseEntity.ok(result);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("❌ 분석 중 오류 발생: " + e.getMessage());
         }
+
     }
+
+    private void grantProjectAdminPermission(String projectKey) {
+        String sonarBaseUrl = "http://localhost:9000";
+        String apiEndpoint = sonarBaseUrl + "/api/permissions/add_user";
+
+        String login = "admin"; // 권한을 부여할 사용자
+        String password = "teamprojectY1!"; // admin 계정 비밀번호
+
+        try {
+            String urlWithParams = apiEndpoint
+                    + "?login=" + URLEncoder.encode(login, StandardCharsets.UTF_8)
+                    + "&permission=admin"
+                    + "&projectKey=" + URLEncoder.encode(projectKey, StandardCharsets.UTF_8);
+
+            HttpURLConnection connection = (HttpURLConnection) new URL(urlWithParams).openConnection();
+            connection.setRequestMethod("POST");
+            String basicAuth = "Basic " + Base64.getEncoder()
+                    .encodeToString((login + ":" + password).getBytes(StandardCharsets.UTF_8));
+            connection.setRequestProperty("Authorization", basicAuth);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 204) {
+                System.out.println("✅ 프로젝트 관리자 권한 부여 완료: " + projectKey);
+            } else {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                String response = in.lines().collect(Collectors.joining());
+                in.close();
+                System.out.println("❌ 권한 부여 실패: " + response);
+            }
+
+        } catch (IOException e) {
+            System.out.println("❌ 권한 부여 중 예외 발생: " + e.getMessage());
+        }
+    }
+
 }
