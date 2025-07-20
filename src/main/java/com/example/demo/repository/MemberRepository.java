@@ -38,5 +38,5 @@ public interface MemberRepository {
 
 	public void save(Member member);
 
-    public boolean isRegisteredEmail(String email);
+	public Member GetMemberByEmail(String email);
 }

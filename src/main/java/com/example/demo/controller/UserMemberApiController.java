@@ -92,13 +92,10 @@ public class UserMemberApiController {
         return ResponseEntity.ok(ResultData.from("S-1","정보가 수정되었습니다"));
     }
 
-
-
     ////////// CLI
     @PostMapping("/verifyGitUser")
-    public VerifyGitUserRP verifyGitUser(@RequestBody VerifyGitUserRQ request) {
-        System.out.println(request.getEmail());
-        boolean verified = memberService.isRegisteredEmail(request.getEmail());
-        return new VerifyGitUserRP(verified);
+    public ResultData verifyGitUser(@RequestBody VerifyGitUserRQ request) {
+        System.out.println("요청 받은 멤버 이메일: " + request.getEmail());
+        return memberService.GetMemberByEmail(request.getEmail());
     }
 }

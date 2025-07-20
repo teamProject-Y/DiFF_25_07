@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.vo.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,15 @@ public class MemberService {
 		return memberRepository.getByOauthId(oauthId);
 	}
 
-	public boolean isRegisteredEmail(String email) {
-		return memberRepository.isRegisteredEmail(email);
+	public ResultData GetMemberByEmail(String email) {
+
+		Member member = memberRepository.GetMemberByEmail(email);
+
+		if(member != null) {
+
+			return ResultData.from("S-1", "git user email 인증 성공", "조회 회원", member);
+		} else {
+			return ResultData.from("F-1", "git user email 인증 실패", "조회 회원 없음", null);
+		}
 	}
 }

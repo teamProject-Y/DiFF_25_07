@@ -65,8 +65,9 @@
 		WHERE id = #{loginedMemberId}
 	</update>
 
-	<select id="isRegisteredEmail" parameterType="String">
-		SELECT COUNT(*) FROM `member`
+	<select id="isRegisteredEmail" parameterType="String"
+			resultType="com.example.demo.vo.Member">
+		SELECT * FROM `member`
 		WHERE email = #{email}
 	</select>
 
