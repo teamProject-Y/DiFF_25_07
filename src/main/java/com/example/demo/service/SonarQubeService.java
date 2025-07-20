@@ -45,7 +45,6 @@ public class SonarQubeService {
         throw new RuntimeException("❌ 분석 결과를 가져오지 못했습니다: " + projectKey);
     }
 
-
     public void deleteProject(String projectKey) {
         String url = "http://localhost:9000/api/projects/delete?project=" + projectKey;
 
@@ -53,7 +52,6 @@ public class SonarQubeService {
         headers.set("Authorization", "Bearer sqa_51b039c183b6985ee4486ab5195fd964fb4d92ba");
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-
         RestTemplate restTemplate = new RestTemplate();
 
         try {
@@ -63,49 +61,60 @@ public class SonarQubeService {
                     entity,
                     String.class
             );
-            System.out.println("🧹 Sonar 프로젝트 삭제 성공: " + response.getBody());
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("🧹 Sonar 프로젝트 삭제 성공: " + response.getBody());
+                System.out.println("🧹 SonarQube 프로젝트 삭제 완료: " + projectKey);
+            } else {
+                System.out.println("⚠️ 삭제 요청 응답 상태: " + response.getStatusCode());
+            }
+
         } catch (HttpClientErrorException e) {
             System.out.println("❌ Sonar 프로젝트 삭제 실패: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+        } catch (Exception e) {
+            System.out.println("❌ 삭제 요청 중 알 수 없는 오류 발생: " + e.getMessage());
         }
     }
 
-//    public String analyzeProject(File projectDir, String projectKey) throws IOException {
-//        try {
-//            createSonarPropertiesFile(projectDir, projectKey);
-//
-//            System.out.println("📁 Sonar 분석 디렉토리: " + projectDir.getAbsolutePath());
-//
-//            ProcessBuilder pb = new ProcessBuilder("sonar-scanner");
-//            pb.directory(projectDir);
-//            pb.redirectErrorStream(true);
-//            Process process = pb.start();
-//
-//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    System.out.println("▶ " + line);
-//                }
-//            }
-//
-//            Thread.sleep(3000); // 결과 수신 대기
-//
-//            String resultJson = getAnalysisResult(projectKey);
-//            System.out.println("📊 분석 결과: " + resultJson);
-//
-//            deleteProject(projectKey); // ✅ SonarQube 서버에서 삭제
-//            System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
-//
-//            return resultJson;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "❌ 분석 실패: " + e.getMessage();
-//
-//        } finally {
-//            deleteDirectoryRecursively(projectDir); // ✅ 로컬 디렉토리 삭제
-//            System.out.println("🧹 임시 디렉토리 삭제 완료: " + projectDir.getAbsolutePath());
-//        }
-//    }
+
+
+    public String analyzeProject(File projectDir, String projectKey) throws IOException {
+        try {
+            createSonarPropertiesFile(projectDir, projectKey);
+
+            System.out.println("📁 Sonar 분석 디렉토리: " + projectDir.getAbsolutePath());
+
+            ProcessBuilder pb = new ProcessBuilder("sonar-scanner");
+            pb.directory(projectDir);
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println("▶ " + line);
+                }
+            }
+
+            Thread.sleep(3000); // 결과 수신 대기
+
+            String resultJson = getAnalysisResult(projectKey);
+            System.out.println("📊 분석 결과: " + resultJson);
+
+            deleteProject(projectKey); // ✅ SonarQube 서버에서 삭제
+            System.out.println("🧹 Sonar 프로젝트 삭제 완료: " + projectKey);
+
+            return resultJson;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "❌ 분석 실패: " + e.getMessage();
+
+        } finally {
+            deleteDirectoryRecursively(projectDir); // ✅ 로컬 디렉토리 삭제
+            System.out.println("🧹 임시 디렉토리 삭제 완료: " + projectDir.getAbsolutePath());
+        }
+    }
 
     private void deleteDirectoryRecursively(File dir) {
         if (dir == null || !dir.exists()) return;
