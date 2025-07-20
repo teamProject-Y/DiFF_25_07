@@ -25,6 +25,7 @@ public class SseController {
     public SseEmitter connect(@AuthenticationPrincipal Member member) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); // 타임아웃 무제한
         // 로그인한 userId로 등록
+        System.out.println("heel");
         sseEmitters.add((long) member.getId(), emitter);
 
         // 초기 연결 확인 이벤트
