@@ -28,7 +28,7 @@ public class SonarQubeService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        int retryCount = 15; // 최대 15번 시도 (약 30초)
+        int retryCount = 3;
         int delay = 2000;    // 2초 대기
 
         for (int i = 0; i < retryCount; i++) {
@@ -45,17 +45,38 @@ public class SonarQubeService {
         throw new RuntimeException("❌ 분석 결과를 가져오지 못했습니다: " + projectKey);
     }
 
-
     public void deleteProject(String projectKey) {
-        String url = sonarHost + "/api/projects/delete?project=" + projectKey;
+        String url = "http://localhost:9000/api/projects/delete?project=" + projectKey;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(sonarToken, "");
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        headers.set("Authorization", "Bearer sqa_51b039c183b6985ee4486ab5195fd964fb4d92ba");
 
+        HttpEntity<String> entity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("🧹 Sonar 프로젝트 삭제 성공: " + response.getBody());
+                System.out.println("🧹 SonarQube 프로젝트 삭제 완료: " + projectKey);
+            } else {
+                System.out.println("⚠️ 삭제 요청 응답 상태: " + response.getStatusCode());
+            }
+
+        } catch (HttpClientErrorException e) {
+            System.out.println("❌ Sonar 프로젝트 삭제 실패: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+        } catch (Exception e) {
+            System.out.println("❌ 삭제 요청 중 알 수 없는 오류 발생: " + e.getMessage());
+        }
     }
+
+
 
     public String analyzeProject(File projectDir, String projectKey) throws IOException {
         try {
@@ -135,7 +156,7 @@ public class SonarQubeService {
             writer.println("sonar.sources=" + sourcePath);
             writer.println("sonar.java.binaries=" + binaryPath);
             writer.println("sonar.java.source=17");
-            writer.println("sonar.token=" + sonarToken);  // 토큰 추가
+            writer.println("sonar.login=" + sonarToken);  // 토큰 추가
 
         }
     }
